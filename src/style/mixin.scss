@@ -1,0 +1,70 @@
+@mixin text-ellipsis() {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-ellipsis-multi($line) {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: $line;
+  -webkit-box-orient: vertical;
+}
+
+@mixin flex-center($direction: row) {
+  display: flex;
+  flex-direction: $direction;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin box-shadow {
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+@mixin img-wrap($width, $height: $width) {
+  width: $width;
+  height: $height;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+@mixin abs-stretch {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  right: 0;
+}
+
+@mixin abs-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@mixin round($d) {
+  width: $d;
+  height: $d;
+  border-radius: 50%;
+}
+
+@mixin list($item-width) {
+  .list-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -12px;
+
+    .list-item {
+      width: $item-width;
+      margin-bottom: 36px;
+      padding: 0 12px;
+    }
+  }
+}

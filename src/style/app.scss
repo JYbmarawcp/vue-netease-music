@@ -1,0 +1,61 @@
+/**
+ ** 应用级别的一些样式
+ **/
+body {
+  color: var(--font-color);
+}
+
+::selection {
+  background-color: $theme-color;
+  color: white;
+}
+
+// 滚动条
+::-webkit-scrollbar-track {
+  background-color: var(--menu-bgcolor);
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-color);
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.5s;
+  transform: none;
+}
+.slide-enter,
+.slide-leave-to {
+  transform: translateY(100%);
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s;
+  opacity: 1;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+// 转化为rem
+.iconfont {
+  font-size: 16px;
+}
+
+a {
+  color: $theme-color;
+
+  &:hover,
+  &:focus,
+  &:visited {
+    color: $theme-color;
+  }
+}

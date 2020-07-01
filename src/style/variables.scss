@@ -1,0 +1,41 @@
+$theme-color: #d33a31;
+$black: #000;
+$white: #fff;
+$gold: #e7aa5a;
+$blue: #517eaf;
+
+$font-size: 14px;
+$font-size-medium-sm: 13px;
+$font-size-lg: 16px;
+$font-size-sm: 12px;
+$font-size-xs: 10px;
+$font-size-medium: 15px;
+$font-size-title: 18px;
+$font-size-title-lg: 24px;
+
+$font-weight-bold: 700;
+
+$font-color-transparent: rgba(255, 255, 255, 0.5);
+
+$border: 1px solid #3f3f3f;
+
+$page-padding: 16px 32px;
+// layout
+$layout-content-min-width: 700px;
+// content
+$center-content-max-width: 1000px;
+// header
+$header-height: 50px;
+
+// mini-player
+$mini-player-height: 60px;
+$mini-player-z-index: 1002;
+
+//playlist
+$playlist-z-index: 1001;
+
+//search
+$search-panel-z-index: 1001;
+
+//song-detail
+$song-detail-z-index: 1000;
