@@ -1,3 +1,7 @@
+// export function pad(num, n=2) {
+//   let len
+// }
+
 export function isDef(v) {
   return v !== undefined && v !== null
 }
