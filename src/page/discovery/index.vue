@@ -3,6 +3,8 @@
     <div class="discovery-content">
       <Banner />
       <NewPlaylists />
+      <NewSongs />
+      <NewMvs />
     </div>
   </div>
 </template>
@@ -10,9 +12,11 @@
 <script>
 import Banner from "./banner"
 import NewPlaylists from "./new-playlists"
+import NewSongs from "./new-songs"
+import NewMvs from "./new-mvs"
 export default {
   components: {
-    Banner, NewPlaylists
+    Banner, NewPlaylists, NewSongs, NewMvs
   }
 }
 </script>
