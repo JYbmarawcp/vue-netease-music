@@ -4,7 +4,10 @@
    class="play-icon-wrap"
   >
     <Icon
-      />
+      :size="iconSize"
+      class="play-icon"
+      type="play"
+    />
 
   </div>
 </template>
