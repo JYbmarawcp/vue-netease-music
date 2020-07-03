@@ -2,7 +2,26 @@
   <div class="menu">
     <User />
     <div class="menu-wrap">
-      
+      <div
+        class="menu-block"
+        v-for="(menu, index) in menusWithPlaylist"
+        :key="index"
+      >
+        <!-- <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p> -->
+        <ul class="menu-list">
+          <router-link
+            v-for="item in menu.children"
+            :key="item.name"
+            :to="item.path"
+            class="menu-item"
+            active-class="menu-item-active"
+            tag="li"
+          >
+            <Icon :size="16" :type="item.meta.icon" class="iconfont" />
+            <span class="menu-title">{{ item.meta.title}}</span>
+          </router-link>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -20,8 +39,17 @@ export default {
           type: "root",
           children: menuRoutes
         }
-      ]
+      ],
+      isLogin: false
     }
+  },
+  computed: {
+    // 组合登录后的歌单
+    menusWithPlaylist() {
+      return this.isLogin
+        ? this.menus.concat(this.userMenus)
+        : this.menus
+    },
   },
   components: {
     User
@@ -37,6 +65,45 @@ export default {
   flex-direction: column;
   background-color: var(--menu-bgcolor);
 
+  .menu-wrap {
+    flex: 1;
+    overflow: hidden;
+    overflow-y: auto;
 
+    .menu-block {
+      margin-bottom: 16px;
+
+      .menu-list {
+        .menu-item {
+          @include text-ellipsis;
+          padding: 12px 18px;
+          cursor: pointer;
+
+          &:hover {
+            background: var(--menu-item-hover-bg);
+          }
+
+          &-active {
+            color: $theme-color;
+            background: var(--menu-item-active-bg);
+          
+            i {
+              color: $theme-color;
+            }
+          }
+
+          .iconfont {
+            font-size: $font-size-medium-sm;
+          }
+
+          .menu-title {
+            font-size: $font-size-medium-sm;
+            margin-left: 8px;
+          }
+        }
+      }
+    }
+    
+  }
 }
 </style>

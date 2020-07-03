@@ -16,11 +16,11 @@ export const menuRoutes = [
       icon: 'music',
      }
   },
-  {
-    path: 'playlists',
-    name: 'playlists',
-    // component: 
-  }
+  // {
+  //   path: 'playlists',
+  //   name: 'playlists',
+  //   component: 
+  // }
 ]
 Vue.use(Router);
 
