@@ -11,3 +11,21 @@ require.context('.', false, /\.vue$/)
 正则表达匹配中是有区分大小写的，i 就是说明不区分大小写
 
 * 在flex容器中，当空间不够的时候，flex-shrink不为0的元素会被压缩，所以解决的方法就是给图片设置：flex-shrink:0。
+
+* 为了防止组件多个实例之间共享属性，所以需要通过工厂函数来获取值
+数组
+data: {
+    default: () => []
+} 
+ 
+对象
+data: {
+    default: () => ({})
+}
+
+* vm.$slots
+用来访问被插槽分发的内容。每个具名插槽有其相应的 property (例如：v-slot:foo 中的内容将会在 vm.$slots.foo 中被找到)。default property 包括了所有没有被包含在具名插槽中的节点，或 v-slot:default 的内容。
+
+* substr() 方法可在字符串中抽取从 start 下标开始的指定数目的字符。
+
+* number | 0可以向下取整(先将数值转换成32位二进制整数值（如果有小数则忽略)

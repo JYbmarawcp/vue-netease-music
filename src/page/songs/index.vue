@@ -1,14 +1,20 @@
 <template>
   <div class="songs">
     <div class="tabs">
-
+      
     </div>
-
+    <SongTable 
+      :songs="songs"
+      header-row-class-name="header-row"
+    />
   </div>
 </template>
 
 <script>
 import { getTopSongs } from "@/api"
+import { createSong } from "@/utils"
+import SongTable from '@/components/song-table'
+
 export default {
   async created () {
     this.tabs = [
@@ -27,12 +33,40 @@ export default {
   },
   methods: {
     async getsongs() {
-      const { data } = await getTopSongs()
+      const { data } = await getTopSongs(this.tabs[this.activeTabIndex].type)
+      this.songs = data.map(song => {
+        const {
+          id,
+          name,
+          artists,
+          duration,
+          mvid,
+          album: { picUrl, name: albumName }
+        } = song
+        return createSong({
+          id,
+          name,
+          artists,
+          duration,
+          albumName,
+          img: picUrl,
+          mvId: mvid
+        })
+      })
     }
+  },
+  components: {
+    SongTable
   }
 }
 </script>
 
-<style>
+<style lang="scss">
+.songs {
+  padding: 12px;
 
+  .header-row {
+    display: none;
+  }
+}
 </style>
