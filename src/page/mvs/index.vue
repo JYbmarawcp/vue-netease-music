@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mvs">
 
   </div>
 </template>
@@ -10,5 +10,5 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>
