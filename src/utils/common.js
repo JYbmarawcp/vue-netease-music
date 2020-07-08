@@ -1,3 +1,4 @@
+import { Notification } from 'element-ui'
 
 export function pad(num, n=2) {
   let len = num.toString().length
@@ -23,3 +24,17 @@ export function formatNumber(number) {
   number = Number(number) || 0
   return number > 100000 ? `${Math.round(number / 10000)}万` : number
 }
+
+export function notify(message, type) {
+  const params = {
+    message,
+    duration: 1500
+  }
+  const fn = type ? Notification[type] : Notification
+  return fn(params)
+}
+['success', 'warning', 'info', 'error'].forEach(key => {
+  notify[key] = (message) => {
+    return notify(message, key)
+  }
+})

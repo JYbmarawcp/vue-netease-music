@@ -1,5 +1,8 @@
 <script>
+import ElTable from "element-ui/lib/table"
+import { mapState } from "@/store/helper/music"
 import { pad, goMvWithCheck } from "@/utils"
+
 export default {
   props: {
     hideColumns: {
@@ -11,7 +14,7 @@ export default {
       default: () => [] 
     },
     highlightText: {
-      type: Sring,
+      type: String,
       default: "",
     },
     // 名字下面渲染的额外内容
@@ -61,7 +64,7 @@ export default {
             default: scope => {
               return (
                 <div class="img-wrap">
-                  <img src="scope.row.img" />
+                  <img src={scope.row.img} />
                   <PlayIcon class="play-icon" />
                 </div>
               )
@@ -77,11 +80,27 @@ export default {
               row: { mvId },
             } = scope
 
+            const onGoMv = async e => {
+              e.stopPropagation()
+              goMvWithCheck(mvId)
+            }
             return (
               <div>
                 <div class="song-table-name-cell">
-
+                  {commonHighlightSlotScopes.default(scope)}
+                  
+                  {mvId ? (
+                    <Icon
+                      class="mv-icon"
+                      onClick={onGoMv}
+                      type="mv"
+                      color="theme"
+                      size={18}
+                    />
+                  ) : null}
                 </div>
+
+                { this.renderNameDesc ? this.renderNameDesc(scope) : null}
               </div>
             )
           }
@@ -114,26 +133,98 @@ export default {
     }
   },
   methods: {
-    onRowClick(song) {
-      
+    onRowClick() {
     },
     isActiveSong(song) {
       return song.id === this.currentSong.id
-    }
+    },
+    tableCellClassName(args) {
+      const { row, columnIndex } = args
+      const cellClassNameProp = this.$attrs.cellClassName
+
+      let retCls = []
+      // 执行外部传入的方法
+      if (cellClassNameProp) {
+        const propRet = cellClassNameProp(args)
+        if (propRet) {
+          retCls.push(propRet)
+        }
+      }
+      if (
+        this.isActiveSong(row) &&
+        columnIndex ===
+          this.showColumns.findIndex(({ prop }) => prop === "name")
+      ) {
+        retCls.push("song-active")
+      }
+      return retCls.join(" ")
+    },
+
+  },
+  computed: {
+    showColumns() {
+      const hideColumns = this.hideColumns.slice()
+      const reference = this.songs[0]
+      const { img } = reference
+      if(!img) {
+        hideColumns.push("img")
+      }
+      return this.columns.filter(column => {
+        return !hideColumns.find(hideColumns => hideColumns === column.prop)
+      })
+    },
+    ...mapState(['currentSong']),
   },
   render() {
+    const elTableProps = ElTable.props
+    // 从$attrs里提取作为prop的值
+    const { props, attrs } = getPropsAndAttrs(this.$attrs, elTableProps)
     const tableAttrs = {
       attrs,
       on: {
-
-      }
+        ...this.$listeners,
+        ["row-click"]: this.onRowClick,
+      },
+      props: {
+        ...props,
+        cellClassName: this.tableCellClassName,
+        headerCellClassName: "title-th",
+        data: this.songs,
+      },
+      style: { width: "99.9%"}
     }
     return this.songs.length ? (
-      <el-table class="song-table">
-
+      <el-table class="song-table" {...tableAttrs}>
+        {
+          this.showColumns.map((column, index) => {
+            const { scopedSlots, ...columnProps } = column
+            return (
+              <el-table-column
+                key={index}
+                props={columnProps}
+                scopedSlots={scopedSlots}
+              >
+              </el-table-column>
+            )
+          })
+        }
       </el-table>
     ) : null
   }
+}
+
+function getPropsAndAttrs(rawAttrs, componnentProps) {
+  const props = {}
+  const attrs = {}
+  Object.keys(rawAttrs).forEach(key => {
+    const value = rawAttrs[key]
+    if(Object.prototype.hasOwnProperty.call(componnentProps, key)) {
+      props[key] = value
+    } else {
+      attrs[key] = value
+    }
+  })
+  return { props, attrs }
 }
 </script>
 

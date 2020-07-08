@@ -1,3 +1,5 @@
+const isProd = process.env.NODE_ENV === 'production'
+
 module.exports = {
   configureWebpack: {
     resolve: {
@@ -11,6 +13,12 @@ module.exports = {
         page: "@/page",
       },
     },
+    externals: isProd ? {
+      vue: 'Vue',
+      'vue-router': 'VueRouter',
+      vuex: 'Vuex',
+      axios: 'axios',
+    }: {},
   },
   css: {
     loaderOptions: {

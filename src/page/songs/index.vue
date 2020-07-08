@@ -28,7 +28,8 @@ export default {
   },
   data () {
     return {
-      
+      activeTabIndex: 0,
+      songs: []
     }
   },
   methods: {
@@ -43,6 +44,7 @@ export default {
           mvid,
           album: { picUrl, name: albumName }
         } = song
+        
         return createSong({
           id,
           name,
@@ -53,6 +55,7 @@ export default {
           mvId: mvid
         })
       })
+      
     }
   },
   components: {
