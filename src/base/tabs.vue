@@ -110,6 +110,15 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.tab-wrap {
+  display: flex;
 
+  .tab-item {
+    padding: 12px 0;
+    margin: 0 12px;
+    color: var(--tab-item-color);
+    font-size: $font-size-medium;
+  }
+}
 </style>
