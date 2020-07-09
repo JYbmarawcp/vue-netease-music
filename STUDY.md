@@ -29,3 +29,24 @@ data: {
 * substr() 方法可在字符串中抽取从 start 下标开始的指定数目的字符。
 
 * number | 0可以向下取整(先将数值转换成32位二进制整数值（如果有小数则忽略)
+
+* vue-lazyLoad 
+preLoad （预加载高度比例）
+error   （图片路径错误时加载图片)
+loading （预加载图片）
+attempt （尝试加载图片数量）
+
+* watch 
+{
+    deep: true (代表深度监听)
+    immediate:true (代表立即先去执行handler方法)
+    handler(){} 
+}
+
+* 让当前的元素滚动到浏览器窗口的可视区域内。定义动画过渡效果， 定义垂直方向，定义水平方向
+element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+
+* model
+类型：{ prop?: string, event?: string }
+允许一个自定义组件在使用 v-model 时定制 prop 和 event。默认情况下，一个组件上的 v-model 会把 value 用作 prop 且把 input 用作 event，但是一些输入类型比如单选框和复选框按钮可能想使用 value prop 来达到不同的目的。使用 model 选项可以回避这些情况产生的冲突。
+

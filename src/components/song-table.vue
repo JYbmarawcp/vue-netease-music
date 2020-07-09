@@ -64,7 +64,7 @@ export default {
             default: scope => {
               return (
                 <div class="img-wrap">
-                  <img src={scope.row.img} />
+                  <img v-lazy={this.$utils.genImgUrl(scope.row.img, 120)} />
                   <PlayIcon class="play-icon" />
                 </div>
               )
@@ -75,34 +75,36 @@ export default {
           prop: "name",
           lable: "音乐标题",
           className: "title-td",
-          scopedSlots: scope => {
-            const {
-              row: { mvId },
-            } = scope
+          scopedSlots: {
+            default: scope => {
+              const {
+                row: { mvId },
+              } = scope
 
-            const onGoMv = async e => {
-              e.stopPropagation()
-              goMvWithCheck(mvId)
-            }
-            return (
-              <div>
-                <div class="song-table-name-cell">
-                  {commonHighlightSlotScopes.default(scope)}
-                  
-                  {mvId ? (
-                    <Icon
-                      class="mv-icon"
-                      onClick={onGoMv}
-                      type="mv"
-                      color="theme"
-                      size={18}
-                    />
-                  ) : null}
+              const onGoMv = async e => {
+                e.stopPropagation()
+                goMvWithCheck(mvId)
+              }
+              return (
+                <div>
+                  <div class="song-table-name-cell">
+                    {commonHighlightSlotScopes.default(scope)}
+                    
+                    {mvId ? (
+                      <Icon
+                        class="mv-icon"
+                        onClick={onGoMv}
+                        type="mv"
+                        color="theme"
+                        size={18}
+                      />
+                    ) : null}
+                  </div>
+
+                  { this.renderNameDesc ? this.renderNameDesc(scope) : null}
                 </div>
-
-                { this.renderNameDesc ? this.renderNameDesc(scope) : null}
-              </div>
-            )
+              )
+            }
           }
         },
         {
@@ -228,6 +230,64 @@ function getPropsAndAttrs(rawAttrs, componnentProps) {
 }
 </script>
 
-<style>
+<style lang="scss">
+.song-table {
+  .title-th {
+    color: var(--font-color-grey2);
+    font-weight: normal;
+  }
 
+  .title-td {
+    color: var(--font-color-white);
+  }
+
+  .padding-space {
+    padding-left: 24px;
+  }
+
+  .song-active {
+    color: $theme-color;
+
+    .high-light-text {
+      color: $theme-color;
+    }
+  }
+
+  .index-wrap {
+    text-align: center;
+    color: var(--font-color-gery-shallow);
+  }
+
+  .img-wrap {
+    position: relative;
+    @include img-wrap(60px);
+
+    img {
+      border-radius: 4px;
+    }
+    .play-icon {
+      @include abs-center;
+    }
+  }
+  .high-light-text {
+    color: $blue;
+  }
+
+  .song-table-name-cell {
+    @include text-ellipsis;
+    display: flex;
+    align-items: center;
+    flex: 0 0 24px;
+
+    .song-table-name {
+      overflow: hidden;
+      @include text-ellipsis;
+    }
+
+    .mv-icon {
+      width: 24px;
+      margin-left: 4px;
+    }
+  }
+}
 </style>

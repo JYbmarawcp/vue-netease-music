@@ -25,6 +25,14 @@ export function formatNumber(number) {
   return number > 100000 ? `${Math.round(number / 10000)}万` : number
 }
 
+export function genImgUrl(url, w, h) {
+  if(!h) {
+    h = w
+  }
+  url += `?param=${w}y${h}`
+  return url
+}
+
 export function notify(message, type) {
   const params = {
     message,
@@ -38,3 +46,7 @@ export function notify(message, type) {
     return notify(message, key)
   }
 })
+
+export function getPageOffset(page, limit) {
+  return (page -1) * limit
+}

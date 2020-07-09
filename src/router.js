@@ -3,8 +3,10 @@ import Router from "vue-router";
 
 const Discovery = () => import('@/page/discovery')
 const Songs = () => import('@/page/songs')
+
+const Mvs = () => import('@/page/mvs')
 //内容需要居中的页面
-export const LayoutCenterNames = ['discovery', 'songs']
+export const LayoutCenterNames = ['discovery', 'songs', 'mvs']
 
 //需要显示在侧边栏菜单的页面
 export const menuRoutes = [
@@ -29,6 +31,15 @@ export const menuRoutes = [
     meta: { 
       title: '最新音乐',
       icon: 'yinyue'
+     }
+  },
+  {
+    path: '/mvs',
+    name: 'mvs',
+    component: Mvs,
+    meta: { 
+      title: '最新MV',
+      icon: 'mv'
      }
   }
 ]

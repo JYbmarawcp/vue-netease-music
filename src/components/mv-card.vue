@@ -1,13 +1,16 @@
 <template>
   <div @click="goMv" class="mv-card">
     <div class="img-wrap">
-      <img :src="img">
+      <img v-lazy="$utils.genImgUrl(img, 500, 260)" />
       <div class="play-count-wrap" v-if="playCount">
         {{ $utils.formatNumber(playCount) }}
       </div>
-      <!-- <div class="play-icon-wrap">
-        
-      </div> -->
+      <div class="play-icon-wrap">
+        <PlayIcon :size="48" class="play-icon" />
+      </div>
+      <div class="duration-wrap" v-if="duration">
+        {{ $utils.formatTime(duration / 1000 )}}
+      </div>
     </div>
     <p class="name" v-if="name">{{ name }}</p>
     <p class="author" v-if="author">{{ author }}</p>
@@ -17,7 +20,7 @@
 <script>
 import { isDef } from "@/utils"
 export default {
-  props: ["id", "img", "name", "author", "playCount"],
+  props: ["id", "img", "name", "author", "playCount", "duration"],
   methods: {
     goMv() {
       // 如果传入id， 则点击直接跳转到mv页面
@@ -45,6 +48,22 @@ export default {
       border-radius: 4px;
     }
 
+    .play-icon-wrap {
+      @include abs-stretch;
+
+      &:hover {
+        .play-icon {
+          opacity: 1;
+        }
+      }
+
+      .play-icon {
+        @include abs-center;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+    }
+
     .play-count-wrap {
       display: flex;
       align-items: center;
@@ -54,6 +73,14 @@ export default {
       font-size: $font-size-sm;
       color: $white;
     }
+  }
+
+  .duration-wrap {
+    position: absolute;
+    right: 2px;
+    bottom: 2px;
+    font-size: $font-size-sm;
+    color: $white;
   }
 
   .name {
