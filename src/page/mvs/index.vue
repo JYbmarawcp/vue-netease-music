@@ -11,9 +11,21 @@
     </div>
     <div class="tabs-wrap">
       <span class="tabs-type">类型：</span>
+      <Tabs 
+        :tabs="typeTabs"
+        class="tabs"
+        type="split"
+        v-model="activeTypeTabIndex"
+      />
     </div>
     <div class="tabs-wrap">
       <span class="tabs-type">排序：</span>
+      <Tabs 
+        :tabs="sortTabs"
+        class="tabs"
+        type="split"
+        v-model="activeSortTabIndex"
+      />
     </div>
     <WithPagination
       :getData="getAllMvs"
@@ -96,7 +108,15 @@ export default {
   padding: $page-padding;
   margin: auto;
 
-  
+  .tabs-wrap {
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+
+    .tabs-type {
+      font-size: $font-size-sm;
+    }
+  }
   @include list(25%)
 }
 </style>

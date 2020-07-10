@@ -49,4 +49,19 @@ element.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
 * model
 类型：{ prop?: string, event?: string }
 允许一个自定义组件在使用 v-model 时定制 prop 和 event。默认情况下，一个组件上的 v-model 会把 value 用作 prop 且把 input 用作 event，但是一些输入类型比如单选框和复选框按钮可能想使用 value prop 来达到不同的目的。使用 model 选项可以回避这些情况产生的冲突。
-
+// 定义model属性
+model: {
+    // prop即 父组件使用 v-model 绑定的属性,这个名称是自定义的
+    prop: "value",
+    // event即 子组件会向父组件触发的事件,父组件的 v-model可以监听到这个事件,并将vlaue赋值给v-model绑定的属性
+    event: "input"
+},
+props: {
+    // 这里的 prop 定义必须与 model中定义的 prop 同名
+    value: String
+},
+* align-self 属性定义flex子项单独在侧轴（纵轴）方向上的对齐方式。
+* :not(selector) 选择器匹配非指定元素/选择器的每个元素。
+*  filter(滤镜) 属性 
+    blur(px)给图像设置高斯模糊。"radius"一值设定高斯函数的标准差，或者是屏幕上以多少像素融在一起， 所以值越大越模糊
+* v-slot:header 可以被重写为 #header

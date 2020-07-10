@@ -3,8 +3,9 @@ import Router from "vue-router";
 
 const Discovery = () => import('@/page/discovery')
 const Songs = () => import('@/page/songs')
-
+const Playlists = () => import('@/page/playlists')
 const Mvs = () => import('@/page/mvs')
+const Mv = () => import('@/page/mv')
 //内容需要居中的页面
 export const LayoutCenterNames = ['discovery', 'songs', 'mvs']
 
@@ -19,11 +20,15 @@ export const menuRoutes = [
       icon: 'music',
      }
   },
-  // {
-  //   path: 'playlists',
-  //   name: 'playlists',
-  //   component: 
-  // }
+  {
+    path: '/playlists',
+    name: 'playlists',
+    component: Playlists,
+    meta: { 
+      title: '推荐歌单',
+      icon: 'playlist-menu'
+    }
+  },
   {
     path: '/songs',
     name: 'songs',
@@ -51,6 +56,12 @@ export default new Router({
     {
       path: "/",
       redirect: '/discovery',
+    },
+    {
+      path: '/mv/:id',
+      name: 'mv',
+      component: Mv,
+      props: (route) =>  ({id: +route.params.id}),
     },
     ...menuRoutes,
   ],

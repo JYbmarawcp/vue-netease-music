@@ -5,6 +5,7 @@
       <div class="desc-wrap" v-if="desc">
         <span class="desc">{{ desc }}</span>
       </div>
+      <PlayIcon :size="36" class="play-icon" />
     </div>
     <p class="name">{{ name }}</p>
   </div>
@@ -63,9 +64,23 @@ export default {
       }
     }
 
+    .play-icon {
+      opacity: 0;
+      position: absolute;
+      right: 4px;
+      bottom: 4px;
+      font-size: 24px;
+      transition: all 0.3s;
+      color: $white;
+    }
+
     &:hover {
       .desc-wrap {
         transform: translateY(0);
+      }
+
+      .play-icon {
+        opacity: 1;
       }
     }
 
