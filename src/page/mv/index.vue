@@ -3,25 +3,27 @@
     <div class="mv-content">
       <div class="left">
         <p>MV详情</p>
-        <div class="player">
-
-        </div>
+        <div class="player"></div>
 
         <div class="author-wrap">
           <div class="avatar">
-            <img v-lazy="$utils.genImgUrl()" alt="">
+            <img v-lazy="$utils.genImgUrl(artist.picUrl, 120)" alt="" />
           </div>
-          <p class="author">{{ }}</p>
+          <p class="author">{{ artist.name }}</p>
         </div>
 
-        <p class="name">{{ }}</p>
+        <p class="name">{{ mvDetail.name }}</p>
         <div class="desc">
-          <span class="date">发布：{{}}</span>
-          <span class="count">播放： {{ }}次</span>
+          <span class="date"
+            >发布：{{
+              $utils.formatDate(mvDetail.publishTime, 'yyyy-MM-dd')
+            }}</span
+          >
+          <span class="count">播放： {{ mvDetail.playCount }}次</span>
         </div>
 
         <div class="comments">
-          <!-- <Comments /> -->
+          <Comments />
         </div>
       </div>
 
@@ -36,7 +38,7 @@
             class="simi-mv-card"
           >
             <template #img-wrap>
-              <MvCard 
+              <MvCard
                 :duration="simiMv.duration"
                 :img="simiMv.cover"
                 :playCount="simiMv.playCount"
@@ -50,25 +52,26 @@
 </template>
 
 <script>
-import { getMvDetail, getMvUrl, getSimiMv } from "@/api"
-import MvCard from "@/components/mv-card"
+import { getMvDetail, getMvUrl, getSimiMv, getArtists } from '@/api'
+import Comments from '@/components/comments'
+import MvCard from '@/components/mv-card'
 
 export default {
   props: {
     id: {
       type: Number,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
       mvDetail: {},
-      mvPlayInfo: "",
+      mvPlayInfo: '',
       simiMvs: [],
-
+      artist: {},
     }
   },
-  created () {
+  created() {
     this.init()
   },
   methods: {
@@ -76,23 +79,91 @@ export default {
       const [
         { data: mvDetail },
         { data: mvPlayInfo },
-        { data: simiMvs },
+        { mvs: simiMvs },
       ] = await Promise.all([
         getMvDetail(this.id),
         getMvUrl(this.id),
-        getSimiMv(this.id)
+        getSimiMv(this.id),
       ])
+      const { artist } = await getArtists(mvDetail.artistId)
+
       this.mvDetail = mvDetail
       this.mvPlayInfo = mvPlayInfo
       this.simiMvs = simiMvs
-    }
+      this.artist = artist
+    },
   },
   components: {
-    MvCard
-  }
+    MvCard,
+    Comments,
+  },
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.mv {
+  padding: $page-padding;
 
+  .mv-content {
+    display: flex;
+    max-width: 950px;
+    margin: auto;
+
+    .left {
+      flex: 1;
+
+      .author-wrap {
+        display: flex;
+        align-items: center;
+        margin-bottom: 32px;
+
+        .avatar {
+          @include img-wrap(60px);
+          margin-right: 8px;
+          img {
+            @include round(60px);
+          }
+        }
+
+        .author {
+          font-size: $font-size-lg;
+        }
+      }
+
+      .name {
+        margin-bottom: 16px;
+        font-size: $font-size-title-lg;
+        font-weight: $font-weight-bold;
+      }
+
+      .desc {
+        display: flex;
+        color: var(--font-color-gery-shallow);
+        font-size: $font-size-sm;
+
+        .date {
+          display: inline-block;
+          margin-right: 24px;
+        }
+      }
+
+      .comments {
+        margin-top: 48px;
+      }
+    }
+
+    .right {
+      width: 36%;
+      padding-left: 32px;
+
+      .simi-mvs {
+        padding: -8px 0;
+
+        .simi-mv-card {
+          padding: 8px 0;
+        }
+      }
+    }
+  }
+}
 </style>
