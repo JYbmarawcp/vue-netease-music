@@ -136,6 +136,14 @@ export default {
 .tab-wrap {
   display: flex;
 
+  &.center {
+    justify-content: center;
+  }
+  
+  &.right {
+    justify-content: flex-end;
+  }
+
   .tab-item {
     padding: 12px 0;
     margin: 0 12px;

@@ -7,3 +7,5 @@ export * from './business'
 export * from './rem'
 
 export * from './dom'
+
+export * from './mixin'

@@ -63,6 +63,10 @@ export function genImgUrl (url, w, h) {
   return url
 }
 
+export function isLast(index, arr) {
+  return index === arr.length - 1
+}
+
 export function notify (message, type) {
   const params = {
     message,

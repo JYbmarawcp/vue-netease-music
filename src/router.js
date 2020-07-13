@@ -4,6 +4,7 @@ import Router from "vue-router";
 const Discovery = () => import('@/page/discovery')
 const Songs = () => import('@/page/songs')
 const Playlists = () => import('@/page/playlists')
+const PlaylistDetail = () => import('@/page/playlist-detail')
 const Mvs = () => import('@/page/mvs')
 const Mv = () => import('@/page/mv')
 //内容需要居中的页面
@@ -56,6 +57,11 @@ export default new Router({
     {
       path: "/",
       redirect: '/discovery',
+    },
+    {
+      path: "/playlist/:id",
+      name: 'playlist',
+      component: PlaylistDetail
     },
     {
       path: '/mv/:id',

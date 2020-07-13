@@ -40,10 +40,33 @@ default: () => ({})
   attempt （尝试加载图片数量）
 
 - watch
-  {
-  deep: true (代表深度监听)
-  immediate:true (代表立即先去执行 handler 方法)
-  handler(){}
+  watch: {
+    a: function (val, oldVal) {
+      console.log('new: %s, old: %s', val, oldVal)
+    },
+    // 方法名
+    b: 'someMethod',
+    // 该回调会在任何被侦听的对象的 property 改变时被调用，不论其被嵌套多深
+    c: {
+      handler: function (val, oldVal) { /* ... */ },
+      deep: true
+    },
+    // 该回调将会在侦听开始之后被立即调用
+    d: {
+      handler: 'someMethod',
+      immediate: true
+    },
+    // 你可以传入回调数组，它们会被逐一调用
+    e: [
+      'handle1',
+      function handle2 (val, oldVal) { /* ... */ },
+      {
+        handler: function handle3 (val, oldVal) { /* ... */ },
+        /* ... */
+      }
+    ],
+    // watch vm.e.f's value: {g: 5}
+    'e.f': function (val, oldVal) { /* ... */ }
   }
 
 - 让当前的元素滚动到浏览器窗口的可视区域内。定义动画过渡效果， 定义垂直方向，定义水平方向
@@ -68,3 +91,12 @@ default: () => ({})
 - filter(滤镜) 属性
   blur(px)给图像设置高斯模糊。"radius"一值设定高斯函数的标准差，或者是屏幕上以多少像素融在一起， 所以值越大越模糊
 - v-slot:header 可以被重写为 #header
+
+
+
+* v-loading 优雅的使用loading
+element-loading-text="拼命加载中"  设置loading文字
+
+element-loading-background="rgba(0, 0, 0, 0.8)" 设置loading背景
+
+element-loading-spinner="el-icon-loading" 设置loading图标

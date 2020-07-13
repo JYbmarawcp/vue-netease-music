@@ -2,9 +2,12 @@
   <div class="mv">
     <div class="mv-content">
       <div class="left">
-        <p>MV详情</p>
-        <div class="player"></div>
+        <p class="title">MV详情</p>
 
+        <div class="player">
+          <VideoPlayer :url="mvPlayInfo.url" ref="video" />
+        </div>
+        
         <div class="author-wrap">
           <div class="avatar">
             <img v-lazy="$utils.genImgUrl(artist.picUrl, 120)" alt="" />
@@ -23,7 +26,7 @@
         </div>
 
         <div class="comments">
-          <Comments />
+          <Comments :id="id" type="mv"/>
         </div>
       </div>
 
@@ -36,6 +39,7 @@
             :name="simiMv.name"
             :desc="`by ${simiMv.artistName}`"
             class="simi-mv-card"
+            @click="goMv(simiMv.id)"
           >
             <template #img-wrap>
               <MvCard
@@ -53,10 +57,12 @@
 
 <script>
 import { getMvDetail, getMvUrl, getSimiMv, getArtists } from '@/api'
+import { hideMenuMixin } from "@/utils"
 import Comments from '@/components/comments'
 import MvCard from '@/components/mv-card'
 
 export default {
+  mixins: [hideMenuMixin],
   props: {
     id: {
       type: Number,
@@ -92,17 +98,30 @@ export default {
       this.simiMvs = simiMvs
       this.artist = artist
     },
+    goMv(id) {
+      this.$router.push(`/mv/${id}`)
+    },
+
   },
   components: {
     MvCard,
     Comments,
   },
+  watch: {
+    id: "init"
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .mv {
   padding: $page-padding;
+
+  .title {
+    margin-bottom: 16px;
+    font-size: $font-size-lg;
+    font-weight: $font-weight-bold;
+  }
 
   .mv-content {
     display: flex;
@@ -111,6 +130,12 @@ export default {
 
     .left {
       flex: 1;
+
+      .player {
+        margin-bottom: 16px;
+        overflow: hidden;
+        border-radius: 4px;
+      }
 
       .author-wrap {
         display: flex;
