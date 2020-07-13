@@ -4,10 +4,7 @@
       <Loading :loading="loading" />
     </template>
     <template v-else>
-      <div
-        class="block"
-        v-if="shouldHotCommentShow"
-      >
+      <div class="block" v-if="shouldHotCommentShow">
         <p class="title">精彩评论</p>
         <Comment
           v-for="(comment, index) in hotComments"
@@ -16,13 +13,10 @@
           :border="!$utils.isLast(index, hotComments)"
         />
       </div>
-      <div
-        class="block"
-        v-if="shouldCommentShow"
-      >
+      <div class="block" v-if="shouldCommentShow">
         <p class="title" ref="commentTitle">
           最新评论
-          <span class="count">({{total}})</span>
+          <span class="count">({{ total }})</span>
         </p>
         <Comment
           v-for="(comment, index) in comments"
@@ -39,31 +33,33 @@
         @current-change="onPageChange"
       />
     </template>
-    <empty v-if="!shouldHotCommentShow && !shouldCommentShow">还没有评论哦~</empty>
+    <empty v-if="!shouldHotCommentShow && !shouldCommentShow"
+      >还没有评论哦~</empty
+    >
   </div>
 </template>
 
 <script>
-import { getMvComment } from "@/api"
-import { getPageOffset, scrollInto } from "@/utils"
+import { getMvComment } from '@/api'
+import { getPageOffset, scrollInto } from '@/utils'
 import Comment from './comment'
 
-const SONG_TYPE = "song"
+const SONG_TYPE = 'song'
 // const PLAYLIST_TYPE = "playlist"
-const MV_TYPE = "mv"
+const MV_TYPE = 'mv'
 
 const PAGE_SIZE = 20
 export default {
   props: {
     id: {
       type: Number,
-      required: true
+      required: true,
     },
     type: {
       // song-type, playlist-type, mv-type 之一
       type: String,
-      default: SONG_TYPE
-    }
+      default: SONG_TYPE,
+    },
   },
   data() {
     return {
@@ -83,13 +79,13 @@ export default {
       const commentRequestMap = {
         // [SONG_TYPE]: getSongComment,
         // [PLAYLIST_TYPE]: getPlaylistComment,
-        [MV_TYPE]: getMvComment
+        [MV_TYPE]: getMvComment,
       }
       const commentRequest = commentRequestMap[this.type]
       const { hotComments = [], comments = [], total } = await commentRequest({
         id: this.id,
         pageSize: PAGE_SIZE,
-        offSet: getPageOffset(this.currentPage, PAGE_SIZE)
+        offSet: getPageOffset(this.currentPage, PAGE_SIZE),
       }).finally(() => {
         this.loading = false
       })
@@ -97,14 +93,14 @@ export default {
       this.hotComments = hotComments
       this.comments = comments
       this.total = total
-      this.$emit("update", { comments, hotComments, total })
+      this.$emit('update', { comments, hotComments, total })
     },
     async onPageChange() {
       await this.getComment()
       this.$nextTick(() => {
         scrollInto(this.$refs.commentTitle)
       })
-    }
+    },
   },
   watch: {
     id: {
@@ -114,8 +110,8 @@ export default {
           this.getComment()
         }
       },
-      immediate: true
-    }
+      immediate: true,
+    },
   },
   computed: {
     shouldHotCommentShow() {
@@ -123,11 +119,11 @@ export default {
     },
     shouldCommentShow() {
       return this.comments.length > 0
-    }
+    },
   },
   components: {
-    Comment
-  }
+    Comment,
+  },
 }
 </script>
 
@@ -145,5 +141,4 @@ export default {
     }
   }
 }
-
 </style>
