@@ -1,5 +1,9 @@
 import { request } from "@/utils"
 
+
+// 获取音乐详情(支持多个id,用 , 隔开)
+export const getSongDetail = ids => request.get(`/song/detail?ids=${ids}`)
+
 // 新歌速递
 export const getTopSongs = type => request.get(`/top/song?type=${type}`)
 

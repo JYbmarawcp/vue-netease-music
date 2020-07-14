@@ -167,6 +167,7 @@ export default {
     showColumns() {
       const hideColumns = this.hideColumns.slice()
       const reference = this.songs[0]
+      
       const { img } = reference
       if(!img) {
         hideColumns.push("img")

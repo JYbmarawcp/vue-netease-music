@@ -7,6 +7,7 @@ import { notify } from "./common"
 
 export function createSong (song) {
   const { id, name, img, artists, duration, albumId, albumName, mvId, ...rest } = song
+
   return {
     id,
     name,

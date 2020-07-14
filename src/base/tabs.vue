@@ -70,6 +70,7 @@ export default {
     // 不传的话对应大号字体 高亮加粗
     // small对应小号字体 高亮红色
     // split对应小号字体 分割线分隔 高亮背景色变灰文字变红
+    // theme对应
     type: {
       type: String
     }

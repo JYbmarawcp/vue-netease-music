@@ -40,12 +40,12 @@
 </template>
 
 <script>
-import { getMvComment } from '@/api'
+import { getMvComment, getPlaylistComment } from '@/api'
 import { getPageOffset, scrollInto } from '@/utils'
 import Comment from './comment'
 
 const SONG_TYPE = 'song'
-// const PLAYLIST_TYPE = "playlist"
+const PLAYLIST_TYPE = "playlist"
 const MV_TYPE = 'mv'
 
 const PAGE_SIZE = 20
@@ -78,7 +78,7 @@ export default {
       this.loading = true
       const commentRequestMap = {
         // [SONG_TYPE]: getSongComment,
-        // [PLAYLIST_TYPE]: getPlaylistComment,
+        [PLAYLIST_TYPE]: getPlaylistComment,
         [MV_TYPE]: getMvComment,
       }
       const commentRequest = commentRequestMap[this.type]
