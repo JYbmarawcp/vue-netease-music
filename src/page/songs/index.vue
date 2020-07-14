@@ -1,7 +1,13 @@
 <template>
   <div class="songs">
     <div class="tabs">
-      
+      <Tabs 
+        :tabs="tabs"
+        @tabChange="getsongs"
+        align="right"
+        type="small"
+        v-model="activeTabIndex"
+      />
     </div>
     <SongTable 
       :songs="songs"

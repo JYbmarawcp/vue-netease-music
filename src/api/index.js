@@ -9,3 +9,5 @@ export * from './playlist'
 export * from './artist'
 
 export * from './comment'
+
+export * from './search'

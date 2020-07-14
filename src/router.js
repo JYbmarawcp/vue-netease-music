@@ -7,6 +7,8 @@ const Playlists = () => import('@/page/playlists')
 const PlaylistDetail = () => import('@/page/playlist-detail')
 const Mvs = () => import('@/page/mvs')
 const Mv = () => import('@/page/mv')
+const Search = () => import('@/page/search')
+const SearchSongs = () => import('@/page/search/songs')
 //内容需要居中的页面
 export const LayoutCenterNames = ['discovery', 'songs', 'mvs']
 
@@ -68,6 +70,23 @@ export default new Router({
       name: 'mv',
       component: Mv,
       props: (route) =>  ({id: +route.params.id}),
+    },
+    {
+      path: '/search/:keywords',
+      name: 'search',
+      component: Search,
+      props: true,
+      children: [
+        {
+          path: '/',
+          redirect: 'songs',
+        },
+        {
+          path: 'songs',
+          name: 'searchSongs',
+          component: SearchSongs,
+        }
+      ]
     },
     ...menuRoutes,
   ],

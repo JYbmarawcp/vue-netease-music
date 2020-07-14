@@ -4,9 +4,14 @@
     <div class="tabs-wrap">
       <Tabs :tabs="tabs" type="theme" v-model="activeTab" />
       <el-input
+        @focus="onInputFocus"
+        @blur="onInputBlur"
+        :class="getInputCls()"
         class="input"
+        prefix-icon="el-icon-search"
         placeholder="搜索歌单音乐"
         v-model="searchValue"
+        v-show="SONG_IDX === activeTab"
       ></el-input>
     </div>
 
@@ -14,14 +19,15 @@
       :highlight="searchValue"
       :songs="filteredSongs"
       class="table"
+      v-show="SONG_IDX === activeTab"
     />
 
-    <empty class="empty">
+    <Empty class="empty" v-if="searchValue && !filteredSongs.length">
       未能找到和
       <span>“{{ searchValue }}”</span>
       相关的任何音乐
-    </empty>
-    <div class="comments">
+    </Empty>
+    <div class="comments" v-show=" COMMENT_IDX === activeTab">
       <Comments :id="id" @update="onCommentsUpdate" type="playlist" />
     </div>
   </div>
@@ -47,9 +53,9 @@ export default {
       tabs: ["歌曲列表", "评论"],
       activeTab: SONG_IDX,
       searchValue: "",
+      inputFocus: false,
       playlist: {},
       songs: [],
-
     }
   },
   methods: {
@@ -74,8 +80,17 @@ export default {
       )
       this.songs = songs
     },
-    onCommentsUpdate() {
-      
+    onCommentsUpdate({ total }) {
+      this.tabs.splice(COMMENT_IDX, 1, `评论(${total})`)
+    },
+    onInputFocus() {
+      this.inputFocus = true
+    },
+    onInputBlur() {
+      this.inputFocus = false
+    },
+    getInputCls() {
+      return !this.inputFocus ? "inactive" : ""
     },
     scrollToHeader() {
       const { header } = this.$refs
@@ -117,6 +132,26 @@ export default {
 <style lang="scss" scoped>
 .playlist-detail {
   width: 100%;
+
+  .tabs-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 24px;
+    border-bottom: 1px solid var(--border);
+
+    .input {
+      width: 125px;
+
+      &:not(:hover) {
+        &.inactive {
+          /deep/.el-input__inner {
+            background: transparent !important;
+          }
+        }
+      }
+    }
+  }
 
   .empty {
     @include flex-center;

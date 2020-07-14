@@ -2,7 +2,9 @@
   <div class="search">
     <el-input
       @click.native="onClickInput"
+      @keypress.native.enter="onEnterPress"
       placeholder="搜索"
+      prefix-icon="el-icon-search"
       ref="input"
       v-model.trim="searchKeyword"
     >
@@ -24,7 +26,16 @@ export default {
   },
   methods: {
     onClickInput() {
-
+      this.searchPanelShow = true
+    },
+    
+    onEnterPress() {
+      if (this.searchKeyword) {
+        this.goSearch(this.searchKeyword)
+      }
+    },
+    goSearch(keywords) {
+      this.$router.push(`/search/${keywords}`)
     }
   }
 }

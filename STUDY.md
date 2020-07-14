@@ -100,3 +100,5 @@ element-loading-text="拼命加载中"  设置loading文字
 element-loading-background="rgba(0, 0, 0, 0.8)" 设置loading背景
 
 element-loading-spinner="el-icon-loading" 设置loading图标
+
+* inject 和 provide
