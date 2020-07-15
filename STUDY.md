@@ -102,3 +102,4 @@ element-loading-background="rgba(0, 0, 0, 0.8)" 设置loading背景
 element-loading-spinner="el-icon-loading" 设置loading图标
 
 * inject 和 provide
+provide 可以在祖先组件中指定我们想要提供给后代组件的数据或方法，而在任何后代组件中，我们都可以使用 inject 来接收 provide 提供的数据或方法。

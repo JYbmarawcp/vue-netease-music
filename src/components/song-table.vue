@@ -39,7 +39,7 @@ export default {
       columns: [
         {
           prop: "index",
-          lable: "",
+          label: "",
           width: "70",
           scopedSlots: {
             default: scope => {
@@ -58,7 +58,7 @@ export default {
         },
         {
           prop: "img",
-          lable: "",
+          label: "",
           width: "100",
           scopedSlots: {
             default: scope => {
@@ -73,7 +73,7 @@ export default {
         },
         {
           prop: "name",
-          lable: "音乐标题",
+          label: "音乐标题",
           className: "title-td",
           scopedSlots: {
             default: scope => {
@@ -109,17 +109,17 @@ export default {
         },
         {
           prop: "artistsText",
-          lable: "歌手",
+          label: "歌手",
           scopedSlots: commonHighlightSlotScopes
         },
         {
           prop: "albumName",
-          lable: "专辑",
+          label: "专辑",
           scopedSlots: commonHighlightSlotScopes
         },
         {
           prop: "durationSecond",
-          lable: "时长",
+          label: "时长",
           width: "100",
           scopedSlots: {
             default: scope => {

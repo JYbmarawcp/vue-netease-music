@@ -54,7 +54,9 @@ export default {
     }
   },
   methods: {
-    
+    onUpdateCount(count) {
+      this.count = count
+    }
   },
 }
 </script>

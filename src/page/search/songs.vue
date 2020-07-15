@@ -4,12 +4,15 @@
       :getData="getSearch"
       :getDataParams="searchParams"
       :limit="30"
+      :total="songCount"
       @getDataSuccess="onGetSearch"
     >
       <div class="table">
         <SongTable
           :highlightText="keywords"
+          :renderNameDesc="renderNameDesc"
           :songs="songs"
+          :stripe="true"
         />
       </div>
     </WithPagination>
@@ -30,8 +33,8 @@ export default {
   data () {
     return {
       songs: [],
-      currentPage: 1
-
+      currentPage: 1,
+      songCount: 0
     }
   },
   methods: {
@@ -51,6 +54,17 @@ export default {
         })
       })
       this.songCount = songCount
+      this.searchRoot.onUpdateCount(songCount)
+    },
+    renderNameDesc(scope) {
+      const { alias } = scope.row
+      return alias.map(desc => (
+        <HighlightText
+          class="name-desc"
+          text={desc}
+          highlightText={this.keywords}
+        />
+      ))
     }
 
   },
@@ -72,7 +86,17 @@ export default {
 <style lang="scss" scoped>
 .search-songs {
   .table {
-    
+    .name-desc {
+      display: block;
+      margin-top: 8px;
+      color: var(--font-color-gery-shallow);
+      @include text-ellipsis;
+    }
+  }
+
+  .pagination {
+    margin-top: 18px;
+    text-align: right;
   }
 }
 </style>
