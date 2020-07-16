@@ -7,7 +7,7 @@
       <router-link
         :active-class="`${ROUTE_ACTIVE_CLS} ${activeItemClass}`"
         v-for="(tab, index) in normalizedTabs"
-        :key="tab"
+        :key="tab.key"
         :style="getItemStyle(tab, index)"
         :to="tab.to"
         tag="li"
@@ -33,7 +33,7 @@
 </template>
 
 <script>
-// import { isDef } from "@/utils"
+import { isDef } from "@/utils"
 
 const ACTIVE_PROP = "active"
 const ACTIVE_CHANGE = "tabChange"
@@ -89,9 +89,13 @@ export default {
     isActive(tab, index) {
       // 路由模式
       if( this.isRouteMode ) {
-        return tab
+        const { 
+          resolved: { path: resolvedPath }
+        } = this.$router.resolve(tab.to)
+        return resolvedPath === this.$route.path
+      } else {
+        return index === this[ACTIVE_PROP]
       }
-      return index === this[ACTIVE_PROP]
     },
     getItemCls(tab, index) {
       let base = []
@@ -121,8 +125,7 @@ export default {
   },
   computed: {
     isRouteMode() {
-      // return this.tabs.length && isDef(this.tabs[0].to)
-      return false
+      return this.tabs.length && isDef(this.tabs[0].to)
     },
     normalizedTabs() {
       return typeof this.tabs[0] === "string"

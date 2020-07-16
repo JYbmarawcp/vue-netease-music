@@ -9,6 +9,8 @@ const Mvs = () => import('@/page/mvs')
 const Mv = () => import('@/page/mv')
 const Search = () => import('@/page/search')
 const SearchSongs = () => import('@/page/search/songs')
+const SearchPlaylists = () => import('@/page/search/playlists')
+const SearchMvs = () => import('@/page/search/mvs')
 //内容需要居中的页面
 export const LayoutCenterNames = ['discovery', 'songs', 'mvs']
 
@@ -85,6 +87,16 @@ export default new Router({
           path: 'songs',
           name: 'searchSongs',
           component: SearchSongs,
+        },
+        {
+          path: 'playlists',
+          name: 'searchPlaylists',
+          component: SearchPlaylists,
+        },
+        {
+          path: 'mvs',
+          name: 'searchMvs',
+          component: SearchMvs,
         }
       ]
     },

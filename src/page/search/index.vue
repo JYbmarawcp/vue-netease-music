@@ -4,6 +4,7 @@
       class="header"
       ref="header"
     >
+      <span class="found">搜索</span>
       <span class="keywords">{{ keywords }}</span>
       <span class="found">找到{{count}}个结果</span>
     </div>
@@ -11,10 +12,12 @@
     <div class="tabs-wrap">
       <Tabs 
         :tabs="tabs"
+        itemClass="search-tab-item"
       />
     </div>
 
-    <Empty class="empty" v-if="true">
+    <Empty class="empty" v-if="showEmpty">
+      暂无结果
     </Empty>
     <router-view></router-view>
   </div>
@@ -58,9 +61,40 @@ export default {
       this.count = count
     }
   },
+  computed: {
+    showEmpty() {
+      return this.count === 0
+    }
+  }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.search-detail {
+  .header {
+    padding: 20px 32px;
 
+    .keywords {
+      display: inline-block;
+      font-size: $font-size-title-lg;
+      font-weight: $font-weight-bold;
+      margin: 0 4px;
+    }
+
+    .found {
+      font-size: $font-size-sm;
+      color: var(--font-color-gery-shallow);
+      letter-spacing: 1px;
+    }
+  }
+
+  .tabs-wrap {
+    padding: 0 28px;
+    border-bottom: 1px solid var(--border);
+    
+    /deep/.search-tab-item {
+      font-size: $font-size;
+    }
+  }
+}
 </style>

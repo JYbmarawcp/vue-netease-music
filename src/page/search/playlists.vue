@@ -5,14 +5,20 @@
       :getDataParams="searchParams"
       :total="playlistCount"
       :limit="50"
+      :scrollTarget="searchRoot.$refs && searchRoot.$refs.header"
       @getDataSuccess="onGetPlaylists"
     >
       <div class="list-wrap">
         <PlaylistCard
-
+          v-for="item in playlists"
+          :key="item.id"
+          :desc="`播放量：${$utils.formatNumber(item.playCount)}`"
+          :id="item.id"
+          :img="item.coverImgUrl"
+          :name="item.name"
         />
       </div>
-    <WithPagination/>
+    </WithPagination>
   </div>
 </template>
 
@@ -25,7 +31,7 @@ const SEARCH_TYPE_PLAYLIST = 1000
 export default {
   inject: ["searchRoot"],
   created () {
-    this.getSearch =getSearch
+    this.getSearch = getSearch
   },
   data () {
     return {
@@ -46,11 +52,21 @@ export default {
     }
   },
   components: {
-    WithPagination
+    WithPagination,
+    PlaylistCard
   }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.search-playlists {
+  max-width: 1000px;
+  padding: $page-padding;
+  margin: auto;
 
+  .list-wrap {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
 </style>
