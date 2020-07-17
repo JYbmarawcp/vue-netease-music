@@ -1,13 +1,13 @@
 <template>
   <div class="menu">
     <User />
-    <div class="menu-wrap">
+    <div class="menu-wrap" @click="aaa">
       <div
         class="menu-block"
         v-for="(menu, index) in menusWithPlaylist"
         :key="index"
       >
-        <!-- <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p> -->
+        <p class="menu-block-title" v-if="menu.title">{{ menu.title }}</p>
         <ul class="menu-list">
           <router-link
             v-for="item in menu.children"
@@ -28,6 +28,9 @@
 
 <script>
 import User from "@/components/user"
+import {
+  mapGetters as mapUserGetters
+} from "@/store/helper/user"
 
 import { menuRoutes } from "@/router"
 
@@ -40,16 +43,21 @@ export default {
           children: menuRoutes
         }
       ],
-      isLogin: false
+    }
+  },
+  methods: {
+    aaa() {
+      console.log(this.menus);
     }
   },
   computed: {
     // 组合登录后的歌单
     menusWithPlaylist() {
-      return this.isLogin
+      return this.isLogin && this.userMenus.length
         ? this.menus.concat(this.userMenus)
         : this.menus
     },
+    ...mapUserGetters(["isLogin","userMenus"])
   },
   components: {
     User
@@ -72,6 +80,13 @@ export default {
 
     .menu-block {
       margin-bottom: 16px;
+
+      .menu-block-title {
+        font-size: $font-size-sm;
+        color: var(--font-color-gery2);
+        padding-left: 16px;
+        margin-bottom: 8px;
+      }
 
       .menu-list {
         .menu-item {

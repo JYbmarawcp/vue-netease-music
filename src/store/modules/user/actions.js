@@ -1,5 +1,6 @@
 import storage from 'good-storage'
 import { getUserDetail, getUserPlaylist } from "@/api"
+import { UID_KEY } from "@/utils"
 
 export default {
   async login({ commit }, uid) {
@@ -12,7 +13,7 @@ export default {
       const { profile } = user
       commit('setUser', profile)
       storage.set(UID_KEY, profile.userId)
-    } catch (error) {
+    } catch (e) {
       return error()
     }
 

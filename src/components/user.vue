@@ -1,9 +1,14 @@
 <template>
   <div class="user">
     <!-- 登陆前 -->
-    <div @click="onOpenModel" class="login-trigger">
+    <div @click="onOpenModal" class="login-trigger">
       <i class="user-icon iconfont icon-yonghu"></i>
       <p class="user-name">未登录</p>
+    </div>
+
+    <!-- 登陆后 -->
+    <div>
+      
     </div>
 
     <!-- 登录框 -->
@@ -46,7 +51,22 @@
 </template>
 
 <script>
+import storage from 'good-storage'
+import { UID_KEY, isDef } from "@/utils"
+import {
+  mapActions as mapUserActions,
+  mapState as mapUserState,
+  mapGetters as mapUserGetters
+} from "@/store/helper/user"
+
 export default {
+  // 自动登录
+  created () {
+    const uid = storage.get(UID_KEY)
+    if (isDef(uid)) {
+      this.onLogin(uid)
+    }
+  },
   data () {
     return {
       visible: false,
@@ -55,13 +75,26 @@ export default {
     }
   },
   methods: {
-    onOpenModel() {
+    onOpenModal() {
       this.visible = true
     },
-    async onLogin() {
+    onCloseModal() {
+      this.visible = false
+    },
+    async onLogin(uid) {
       this.loading = true
-      // const success = await this.login(uid)
-    }
+      const success = await this.login(uid).finally(() => {
+        this.loading = true
+      })
+      if (success) {
+        this.onCloseModal()
+      }
+    },
+    ...mapUserActions(["login"])
+  },
+  computed: {
+    ...mapUserState(["user"]),
+    ...mapUserGetters(["isLogin"])
   }
 }
 </script>
