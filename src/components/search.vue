@@ -10,8 +10,14 @@
       v-model.trim="searchKeyword"
     >
     </el-input>
-    <Toggle>
-      <div class="search-panel">
+    <Toggle
+      :reserveDoms="[$refs.input && $refs.input.$el]"
+      :show.sync="searchPanelShow"
+    >
+      <div 
+        class="search-panel"
+        v-show="searchPanelShow"
+      >
         <div 
           class="search-suggest" 
           v-if="suggestShow"

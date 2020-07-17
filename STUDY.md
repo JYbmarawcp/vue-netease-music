@@ -103,3 +103,15 @@ element-loading-spinner="el-icon-loading" 设置loading图标
 
 * inject 和 provide
 provide 可以在祖先组件中指定我们想要提供给后代组件的数据或方法，而在任何后代组件中，我们都可以使用 inject 来接收 provide 提供的数据或方法。
+
+* 换肤
+document.documentElement.style.setProperty(key, value) 来设置变量
+
+* :show.sync
+props 的绑定默认是单向的，我们要在组件内部更新 show 值，需要在父组件上添加 .sync 修饰符，以创建『双向绑定』：
+<Message :show.sync="msgShow"/>
+上面的代码会被 Vue 扩展为：
+<Message :show="msgShow" @update:show="val => msgShow = val" />
+因为父组件有 update:show 事件监听，所以我们能在组件内部使用 $emit 来关闭消息提示： this.$emit('update:show', false)
+
+* undefined 若函数没有返回值则默认返回一个 undefined，布尔值为fales

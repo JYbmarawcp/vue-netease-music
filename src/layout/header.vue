@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <div class="left">
-
+      <div class="buttons">
+        
+      </div>
     </div>
     <div class="right">
       <div class="search-wrap">
