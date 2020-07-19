@@ -3,7 +3,7 @@ import { getUserDetail, getUserPlaylist } from "@/api"
 import { UID_KEY } from "@/utils"
 
 export default {
-  async login({ commit }, uid) {
+  async login ({ commit }, uid) {
     const error = () => {
       return false
     }
@@ -20,5 +20,10 @@ export default {
     const { playlist } = await getUserPlaylist(uid)
     commit('setUserPlaylist', playlist)
     return true
+  },
+  logout ({ commit }) {
+    commit('setUser', {})
+    commit('setUserPlaylist', [])
+    storage.set(UID_KEY, null)
   }
 }

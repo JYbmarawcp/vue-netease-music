@@ -1,18 +1,20 @@
 <template>
   <div class="user">
     <!-- 登陆前 -->
-    <div @click="onOpenModal" class="login-trigger">
+    <div @click="onOpenModal" class="login-trigger" v-if="!isLogin">
       <i class="user-icon iconfont icon-yonghu"></i>
       <p class="user-name">未登录</p>
     </div>
 
     <!-- 登陆后 -->
-    <div>
-      
+    <div @click="onLogout" class="logined-user" v-else>
+      <img v-lazy="$utils.genImgUrl(user.avatarUrl, 80)" class="avatar" />
+      <p class="user-name">{{ user.nickname }}</p>
     </div>
 
     <!-- 登录框 -->
     <el-dialog
+      :modal="false"
       :visible.sync="visible"
       :width="$utils.toRem(320)"
     >
@@ -21,12 +23,14 @@
         <el-input
           class="input"
           placeholder="请输入您的网易云uid"
-          v-model="uid" 
+          v-model="uid"
         />
         <div class="login-help">
           <p class="help">
             1、请
-            <a href="http://music.163.com" target="_blank">点我(http://music.163.com)</a>
+            <a href="http://music.163.com" target="_blank"
+              >点我(http://music.163.com)</a
+            >
             打开网易云音乐官网
           </p>
           <p class="help">2、点击页面右上角的“登录”</p>
@@ -52,26 +56,27 @@
 
 <script>
 import storage from 'good-storage'
-import { UID_KEY, isDef } from "@/utils"
+import { UID_KEY, isDef } from '@/utils'
+import { confirm } from "@/base/confirm"
 import {
   mapActions as mapUserActions,
   mapState as mapUserState,
-  mapGetters as mapUserGetters
-} from "@/store/helper/user"
+  mapGetters as mapUserGetters,
+} from '@/store/helper/user'
 
 export default {
   // 自动登录
-  created () {
+  created() {
     const uid = storage.get(UID_KEY)
     if (isDef(uid)) {
       this.onLogin(uid)
     }
   },
-  data () {
+  data() {
     return {
       visible: false,
       loading: false,
-      uid: ""
+      uid: '',
     }
   },
   methods: {
@@ -90,12 +95,17 @@ export default {
         this.onCloseModal()
       }
     },
-    ...mapUserActions(["login"])
+    onLogout() {
+      confirm('确定要注销嘛？', () => {
+        this.logout()
+      })
+    },
+    ...mapUserActions(['login', 'logout']),
   },
   computed: {
-    ...mapUserState(["user"]),
-    ...mapUserGetters(["isLogin"])
-  }
+    ...mapUserState(['user']),
+    ...mapUserGetters(['isLogin']),
+  },
 }
 </script>
 
@@ -114,7 +124,11 @@ export default {
   .user-icon {
     font-size: 24px;
   }
-  
+
+  .user-name {
+    margin-left: 24px;
+  }
+
   .login-body {
     .input {
       margin-bottom: 16px;
@@ -130,6 +144,16 @@ export default {
   .login-btn {
     width: 100%;
     padding: 8px 0;
+  }
+
+  .logined-user {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .avatar {
+      @include round(40px);
+    }
   }
 }
 </style>
