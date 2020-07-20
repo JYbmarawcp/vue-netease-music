@@ -1,6 +1,6 @@
 <script>
 import ElTable from "element-ui/lib/table"
-import { mapState } from "@/store/helper/music"
+import { mapMutations, mapActions, mapState } from "@/store/helper/music"
 import { pad, goMvWithCheck } from "@/utils"
 
 export default {
@@ -135,7 +135,9 @@ export default {
     }
   },
   methods: {
-    onRowClick() {
+    onRowClick(song) {
+      this.startSong(song)
+      this.setPlaylist(this.songs)
     },
     isActiveSong(song) {
       return song.id === this.currentSong.id
@@ -161,7 +163,8 @@ export default {
       }
       return retCls.join(" ")
     },
-
+    ...mapMutations(["setPlaylist"]),
+    ...mapActions(["startSong"])
   },
   computed: {
     showColumns() {

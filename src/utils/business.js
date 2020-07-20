@@ -1,9 +1,9 @@
 /**
  * 业务工具方法
  */
-import { getMvDetail } from "@/api"
+import { getAlbum, getMvDetail } from "@/api"
 import router from '../router'
-import { notify } from "./common"
+import { isDef, notify } from "./common"
 
 export function createSong (song) {
   const { id, name, img, artists, duration, albumId, albumName, mvId, ...rest } = song
@@ -23,6 +23,17 @@ export function createSong (song) {
     mvId,
     ...rest
   }
+}
+
+export async function getSongImg(id, albumId) {
+  if (!isDef(albumId)) {
+    throw new Error('need albumId')
+  }
+  const { songs } = await getAlbum(albumId)
+  const {
+    al: { picUrl }
+  } = songs.find(({ id: songId }) => songId === id ) || {}
+  return picUrl
 }
 
 export function getArtistsText(artists) {

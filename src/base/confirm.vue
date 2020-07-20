@@ -3,12 +3,15 @@
     :modal="false"
     :visible.sync="visible"
     :width="$utils.toRem(320)"
-    close="confirm-dialog"
+    class="confirm-dialog"
   >
     <div class="title">{{ title || '提示' }}</div>
     <div class="confirm-body">{{ text }}</div>
     <span class="dialog-footer" slot="footer">
-      <el-button @click="confirmAndClose" class="confirm-btn" type="primary">
+      <el-button 
+        @click="confirmAndClose" 
+        class="confirm-btn" 
+        type="primary">
         确认
       </el-button>
     </span>
@@ -38,6 +41,34 @@ export const confirm = function(text, title, onConfirm = () => {}) {
     onConfirm = title
     title = undefined
   }
+
+  const ConfirmCtor = Vue.extend(Confirm)
+  const getInstance = () => {
+    if (!instanceCache) {
+      instanceCache = new ConfirmCtor({
+        propsData: {
+          text,
+          title,
+          onConfirm
+        }
+      })
+      // 生成dom
+      instanceCache.$mount()
+      document.body.appendChild(instanceCache.$el)
+    } else {
+      // 更新属性
+      instanceCache.text = text
+      instanceCache.title = title
+      instanceCache.onConfirm = onConfirm
+    }
+    return instanceCache
+  }
+  const instance = getInstance()
+  // 确保更新的prop渲染到dom
+  // 确保动画效果
+  Vue.nextTick(() => {
+    instance.visible = true
+  })
 }
 </script>
 
@@ -47,11 +78,9 @@ export const confirm = function(text, title, onConfirm = () => {}) {
     padding-top: 20px;
     padding-bottom: 20px;
   }
-
   .confirm-body {
     line-height: 20px;
   }
-
   .confirm-btn {
     width: 100%;
   }

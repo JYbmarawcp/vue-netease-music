@@ -41,6 +41,7 @@ import DetailHeader from './detail-header'
 import Comments from "@/components/comments"
 import SongTable from "@/components/song-table"
 
+const MAX = 500
 const SONG_IDX = 0
 const COMMENT_IDX = 1
 export default {
@@ -66,7 +67,7 @@ export default {
     },
     async genSonglist(playlist) {
       const trackIds = playlist.trackIds.map(({id}) => id)
-      const songDetail = await getSongDetail(trackIds)
+      const songDetail = await getSongDetail(trackIds.slice(0, MAX))
       const songs = songDetail.songs.map(({ id, name, mv, ar, al, dt }) => 
         createSong({
           id,

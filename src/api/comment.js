@@ -1,11 +1,12 @@
-import { request } from "@/utils"
+import { requestWithoutLoading } from "@/utils"
 
 //
 
 // 歌单评论
 export const getPlaylistComment = params => 
-request.get('/comment/playlist', { params })
+  requestWithoutLoading.get('/comment/playlist', { params })
 
 // Mv评论
-export const getMvComment = params => request.get('/comment/mv', { params })
+export const getMvComment = params => 
+  requestWithoutLoading.get('/comment/mv', { params })
 

@@ -1,7 +1,7 @@
 <template>
   <div class="menu">
     <User />
-    <div class="menu-wrap" @click="aaa">
+    <div class="menu-wrap">
       <div
         class="menu-block"
         v-for="(menu, index) in menusWithPlaylist"
@@ -43,11 +43,6 @@ export default {
           children: menuRoutes
         }
       ],
-    }
-  },
-  methods: {
-    aaa() {
-      console.log(this.menus);
     }
   },
   computed: {

@@ -89,7 +89,7 @@ export default {
     async onLogin(uid) {
       this.loading = true
       const success = await this.login(uid).finally(() => {
-        this.loading = true
+        this.loading = false
       })
       if (success) {
         this.onCloseModal()
