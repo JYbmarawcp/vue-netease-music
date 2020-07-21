@@ -1,6 +1,6 @@
 <template>
   <Icon
-    :data-clipboard-action="shareUrl"
+    :data-clipboard-text="shareUrl"
     :size="20"
     @click="onSharePromptClick"
     class="mode-item"

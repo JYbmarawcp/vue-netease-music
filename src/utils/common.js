@@ -1,6 +1,6 @@
 import { Notification } from 'element-ui'
 
-export { debounce } from 'lodash-es'
+export { debounce, throttle } from 'lodash-es'
 
 export function pad (num, n = 2) {
   let len = num.toString().length

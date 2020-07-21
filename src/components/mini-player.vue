@@ -1,5 +1,5 @@
 <template>
-  <div class="mini-player">
+  <div class="mini-player" id="mini-player">
     <!-- 歌曲内容 -->
     <div class="song">
       <template>
@@ -36,7 +36,7 @@
         trigger="manual"
         width="160"
       >
-        <div slot="reference" class="play-icon">
+        <div @click="togglePlaying" slot="reference" class="play-icon">
           <Icon :size="24" :type="playIcon" />
         </div>
       </el-popover>
@@ -44,9 +44,37 @@
     </div>
 
     <div class="mode">
-      <!-- 模式 -->
       <Share :shareUrl="shareUrl" class="mode-item" />
+      <!-- 模式 -->
+      
+      <!-- 播放列表 -->
+      <el-popover
+      :value="isPlaylistPromptShow"
+        placement="top"
+        trigger="manual"
+        width="160"
+      >
+        <p>已更新歌单</p>
+        <Icon
+          :size="20"
+          @click="togglePlaylistShow"
+          class="mode-item"
+          slot="reference"
+          type="playlist"
+        />
+      </el-popover>
+      <!-- 音量 -->
+      <div class="volume-item">
+        <Volume :volume="volume" @volumechange="onVolumeChange" />
+      </div>
+      <!-- github -->
+      <Icon :size="20" @click="goGitHub" class="mode-item" type="github" />
     </div>
+
+    <div class="progress-bar-wrap">
+
+    </div>
+    <audio :src="currentSong.url" ref="audio" />
   </div>
 </template>
 
@@ -58,23 +86,73 @@ import {
   // mapActions
 } from "@/store/helper/music"
 import Share from "@/components/share"
+import storage from 'good-storage'
+import { VOLUME_KEY } from "@/utils"
 
+const DEFAULT_VOLUME = 0.75
 export default {
   data () {
     return {
-      
+      songReady: false,
+      volume: storage.get(VOLUME_KEY, DEFAULT_VOLUME)
     }
   },
+  mounted () {
+    
+  },
   methods: {
+    togglePlaying() {
+      if (!this.currentSong.id) {
+        return
+      }
+      this.setPlayingState(!this.playing)
+    },
+    ready() {
+      this.songReady = true
+    },
+    async play() {
+      if (this.songReady) {
+        try {
+          await this.audio.play()
+        } catch (error) {
+          // 提示用户手动播放
+          
+        }
+      }
+    },
+    pause() {
+      this.audio.pause()
+    },
+    onVolumeChange(percent) {
+      storage.set(VOLUME_KEY, percent)
+    },
+    togglePlaylistShow() {
+      this.setPlaylistShow(!this.isPlaylistShow)
+    },
+    goGitHub() {
+      window.open("https://github.com/JYbmarawcp/vue-netease-music")
+    },
     ...mapMutations([
       "setCurrentTime",
-      "setPlayingState"
+      "setPlayingState",
+      "setPlaylistShow",
     ]),
 
   },
+  watch: {
+    playing(newPlaying) {
+      this.$nextTick(() => {
+        newPlaying ? this.play() : this.pause()
+      })
+    }
+  },
   computed: {
     playIcon() {
-      return "play"
+      return this.playing ? "pause" : "play"
+    },
+
+    audio() {
+      return this.$refs.audio
     },
     playControlIcon() {
       return "shrink"
@@ -82,10 +160,14 @@ export default {
     shareUrl() {
       return `https://music.163.com/#/song?id=${this.currentSong.id}`
     },
+
+    
     ...mapState([
       "currentSong",
       "currentTime",
-      "playing"
+      "playing",
+      "isPlaylistShow",
+      "isPlaylistPromptShow",
     ])
   },
   components: {
@@ -207,5 +289,34 @@ export default {
       color: $theme-color;
     }
   }
+
+  .mode {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 6;
+
+    .mode-item {
+      display: block;
+      margin-right: 16px;
+      width: 22px;
+    }
+
+    .volume-item {
+      margin-left: 22px;
+    }
+  }
+
+  .progress-bar-wrap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -14px;
+  }
+}
+
+.icon {
+  color: var(--font-color);
+  cursor: pointer;
 }
 </style>
