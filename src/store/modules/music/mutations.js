@@ -8,6 +8,9 @@ export default {
   setPlayingState(state, playing) {
     state.playing = playing
   },
+  setPlayMode(state, mode) {
+    state.playMode = mode
+  },
   setPlaylistShow(state, show) {
     state.isPlaylistShow = show
   },
@@ -20,5 +23,8 @@ export default {
     state.playlist = playlist
     // 播放列表未显示 并且两次播放列表的不一样 则弹出提示
 
+  },
+  setPlayHistory(state, history) {
+    state.playHistory = history
   }
 }

@@ -1,9 +1,9 @@
-// import storage from 'good-storage'
-import { getSongImg } from "@/utils"
+import storage from 'good-storage'
+import { PLAY_HISTORY_KEY, getSongImg } from "@/utils"
 
 export default {
   // 整合歌曲信息 并且开始播放
-  async startSong({ commit }, rawSong) {
+  async startSong({ commit, state }, rawSong) {
     // 浅拷贝一份 改变引用
     // 1.不污染元数据
     // 2.单曲循环为了触发watch
@@ -16,6 +16,23 @@ export default {
     commit('setCurrentSong', song)
     commit('setPlayingState', true)
     // 历史记录
-    
+    const { playHistory } = state
+    const playHistoryCopy = playHistory.slice()
+    const findedIndex = playHistoryCopy.findIndex(({id}) => song.id === id)
+    // 删除旧那一项 插入到最前面
+    if (findedIndex !== -1) {
+      playHistoryCopy.splice(findedIndex, 1)
+    }
+    playHistoryCopy.unshift(song)
+    commit('setPlayHistory', playHistoryCopy)
+    storage.set(PLAY_HISTORY_KEY, playHistoryCopy)
+  },
+  clearPlaylist({commit }) {
+    commit('setPlaylist', [])
+  },
+  clearHistory({ commit }) {
+    const history = []
+    commit('setPlayHistory', history)
+    storage.set(PLAY_HISTORY_KEY, history)
   }
 }

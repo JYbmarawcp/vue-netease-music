@@ -17,6 +17,7 @@
       <div class="header">
         <p>总共{{dataSource.length}}首</p>
         <div
+          @click="clear"
           class="remove"
           v-if="dataSource.length"
         >
@@ -24,12 +25,27 @@
           <span class="text">清空</span>
         </div>
       </div>
+      <template>
+        <div 
+          class="song-table-wrap"
+          v-if="dataSource.length"
+        >
+          <SongTable
+            :hideColumns="['index', 'img', 'albumName']"
+            :songs="dataSource"
+          />
+        </div>
+        <empty v-else class="empty">
+          你还没有添加任何歌曲
+        </empty>
+      </template>
     </div>
   </Toggle>
 </template>
 
 <script>
-import { mapState, mapMutations } from "@/store/helper/music"
+import { mapState, mapMutations, mapActions } from "@/store/helper/music"
+import SongTable  from "./song-table"
 
 export default {
   mounted () {
@@ -47,8 +63,15 @@ export default {
     }
   },
   methods: {
-
-    ...mapMutations(["setPlaylistShow"])
+    clear() {
+      if (this.isPlaylist) {
+        this.clearPlaylist()
+      } else {
+        this.clearHistory()
+      }
+    },
+    ...mapMutations(["setPlaylistShow"]),
+    ...mapActions(["clearPlaylist", "clearHistory"])
   },
   computed: {
     dataSource() {
@@ -60,10 +83,11 @@ export default {
     ...mapState([
       "isPlaylistShow",
       "playlist",
+      "playHistory"
     ])
   },
   components: {
-    
+    SongTable
   }
 }
 </script>
@@ -81,6 +105,41 @@ export default {
   flex-direction: column;
   background: var(--playlist-bgcolor);
   z-index: $playlist-z-index;
+  @include box-shadow;
+  @include el-table-theme(var(--playlist-bgcolor));
 
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+    margin: 0 20px;
+    border-bottom: 1px solid var(--border);
+
+    .total {
+      font-size: $font-size-sm;
+    }
+
+    .remove {
+      @include flex-center;
+      cursor: pointer;
+      font-size: $font-size-sm;
+
+      .text {
+        display: inline-block;
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .song-table-wrap {
+    flex: 1;
+    overflow-y: auto;
+  }
+
+  .empty {
+    @include flex-center();
+    flex: 1;
+  }
 }
 </style>

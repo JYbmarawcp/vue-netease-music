@@ -50,16 +50,33 @@ export default {
         style={this.getIconStyle()}
       />
     )
-    // if (this.backdrop) {
-    //   const 
-    // }
+    if (this.backdrop) {
+      const backDropSizeRatio = 1.56
+      const backDropSize = toRem(backDropSizeRatio * this.size)
+      return (
+        <span
+          style={{width: backDropSize, height: backDropSize}}
+          class="backdrop"
+        >
+          {Icon}
+        </span>
+      )
+    }
     return Icon
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.backdrop {
+  display: inline-block;
+  @include flex-center;
+  border-radius: 50%;
 
+  &:hover {
+    background: var(--round-hover-bgcolor);
+  }
+}
 
 .icon-component {
   cursor: pointer;

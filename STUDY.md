@@ -115,3 +115,40 @@ props 的绑定默认是单向的，我们要在组件内部更新 show 值，�
 因为父组件有 update:show 事件监听，所以我们能在组件内部使用 $emit 来关闭消息提示： this.$emit('update:show', false)
 
 * undefined 若函数没有返回值则默认返回一个 undefined，布尔值为fales
+
+* Element.requestFullscreen() 方法用于发出异步请求使元素进入全屏模式。
+toFullScreen：全屏
+function toFullScreen(){    
+　　let elem = document.body;    
+　　elem.webkitRequestFullScreen    
+　　? elem.webkitRequestFullScreen()    
+　　: elem.mozRequestFullScreen    
+　　? elem.mozRequestFullScreen()    
+　　: elem.msRequestFullscreen    
+　　? elem.msRequestFullscreen()    
+　　: elem.requestFullScreen    
+　　? elem.requestFullScreen()    
+　　: alert("浏览器不支持全屏");
+}
+
+exitFullscreen：退出全屏
+function exitFullscreen(){    
+　　let elem = parent.document;    
+　　elem.webkitCancelFullScreen    
+　　? elem.webkitCancelFullScreen()    
+　　: elem.mozCancelFullScreen    
+　　? elem.mozCancelFullScreen()    
+　　: elem.cancelFullScreen    
+　　? elem.cancelFullScreen()    
+　　: elem.msExitFullscreen    
+　　? elem.msExitFullscreen()    
+　　: elem.exitFullscreen    
+　　? elem.exitFullscreen()    
+　　: alert("切换失败,可尝试Esc退出");
+}
+是否全屏
+export function isFullscreen() {
+  return document.fullScreen ||
+    document.mozFullScreen ||
+    document.webkitIsFullScreen
+}

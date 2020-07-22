@@ -45,8 +45,22 @@
 
     <div class="mode">
       <Share :shareUrl="shareUrl" class="mode-item" />
+
       <!-- 模式 -->
-      
+      <el-popover
+        placement="top"
+        trigger="hover"
+        width="160"
+      >
+        <p>{{ playModeText }}</p>
+        <Icon
+          :size="20"
+          :type="modeIcon"
+          @click="onChangePlayMode"
+          class="mode-item"
+          slot="reference"
+        />
+      </el-popover>
       <!-- 播放列表 -->
       <el-popover
       :value="isPlaylistPromptShow"
@@ -87,7 +101,7 @@ import {
 } from "@/store/helper/music"
 import Share from "@/components/share"
 import storage from 'good-storage'
-import { VOLUME_KEY } from "@/utils"
+import { VOLUME_KEY, playModeMap } from "@/utils"
 
 const DEFAULT_VOLUME = 0.75
 export default {
@@ -123,6 +137,16 @@ export default {
     pause() {
       this.audio.pause()
     },
+    onChangePlayMode() {
+      const modeKeys = Object.keys(playModeMap)
+      const currentModeIndex = modeKeys.findIndex(
+        key => playModeMap[key].code === this.playMode
+      )
+      const nextIndx = (currentModeIndex + 1) % modeKeys.length
+      const nextModeKey = modeKeys[nextIndx]
+      const nextMode = playModeMap[nextModeKey]
+      this.setPlayMode(nextMode.code)
+    },
     onVolumeChange(percent) {
       storage.set(VOLUME_KEY, percent)
     },
@@ -135,6 +159,7 @@ export default {
     ...mapMutations([
       "setCurrentTime",
       "setPlayingState",
+      "setPlayMode",
       "setPlaylistShow",
     ]),
 
@@ -150,7 +175,15 @@ export default {
     playIcon() {
       return this.playing ? "pause" : "play"
     },
-
+    currentMode() {
+      return playModeMap[this.playMode]
+    },
+    modeIcon() {
+      return this.currentMode.icon
+    },
+    playModeText() {
+      return this.currentMode.name
+    },
     audio() {
       return this.$refs.audio
     },
@@ -166,6 +199,7 @@ export default {
       "currentSong",
       "currentTime",
       "playing",
+      "playMode",
       "isPlaylistShow",
       "isPlaylistPromptShow",
     ])
