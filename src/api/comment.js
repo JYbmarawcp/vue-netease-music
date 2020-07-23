@@ -1,6 +1,11 @@
 import { requestWithoutLoading } from "@/utils"
 
-//
+// 热门评论
+export const getHotComment = params => 
+  requestWithoutLoading.get(`/comment/hot`, { params })
+// 歌曲评论
+export const getSongComment = params => 
+  requestWithoutLoading.get(`/comment/music`, { params })
 
 // 歌单评论
 export const getPlaylistComment = params => 

@@ -59,7 +59,7 @@ export default {
     .replied {
       padding: 8px;
       margin-top: 8px;
-      background: var(--song-shallow-gery-bg);
+      background: var(--song-shallow-grey-bg);
       border-radius: 4px;
     }
 
@@ -81,11 +81,11 @@ export default {
       margin-top: 8px;
 
       .date {
-        color: var(--font-color-gery-shallow);
+        color: var(--font-color-grey-shallow);
       }
 
       .actions {
-        color: var(--font-color-gery-shallow);
+        color: var(--font-color-grey-shallow);
       }
     }
   }

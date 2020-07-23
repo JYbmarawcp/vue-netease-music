@@ -40,7 +40,12 @@
 </template>
 
 <script>
-import { getMvComment, getPlaylistComment } from '@/api'
+import {
+  getHotComment,
+  getSongComment,
+  getMvComment, 
+  getPlaylistComment
+} from '@/api'
 import { getPageOffset, scrollInto } from '@/utils'
 import Comment from './comment'
 
@@ -77,7 +82,7 @@ export default {
     async getComment() {
       this.loading = true
       const commentRequestMap = {
-        // [SONG_TYPE]: getSongComment,
+        [SONG_TYPE]: getSongComment,
         [PLAYLIST_TYPE]: getPlaylistComment,
         [MV_TYPE]: getMvComment,
       }
@@ -90,7 +95,16 @@ export default {
         this.loading = false
       })
 
-      this.hotComments = hotComments
+      // 歌单的完整热评需要单独请求接口获取
+      if (this.type === PLAYLIST_TYPE && this.currentPage === 1) {
+        const { hotComments: exactHotComments = [] } = await getHotComment({
+          id: this.id,
+          type: 2 // 歌单type
+        })
+        this.hotComments = exactHotComments
+      } else {
+        this.hotComments = hotComments
+      }
       this.comments = comments
       this.total = total
       this.$emit('update', { comments, hotComments, total })

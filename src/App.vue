@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Layout />
+    <Player />
     <MiniPlayer />
     <Playlist />
   </div>
@@ -10,6 +11,7 @@
 import Layout from "@/layout"
 import MiniPlayer from "@/components/mini-player"
 import Playlist from "@/components/playlist"
+import Player from "@/components/player"
 
 export default {
   name: 'app',
@@ -17,6 +19,7 @@ export default {
     Layout,
     MiniPlayer,
     Playlist,
+    Player,
   }
 }
 </script>
