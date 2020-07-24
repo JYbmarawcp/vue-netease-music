@@ -152,3 +152,7 @@ export function isFullscreen() {
     document.mozFullScreen ||
     document.webkitIsFullScreen
 }
+
+* 1turn 一圈
+* animation-play-state: paused; 暂停动画
+* border-color这个属性的初始值（Initial value）就是currentcolor

@@ -6,7 +6,48 @@
     >
       <div class="content">
         <div class="song">
-
+          <div class="left">
+            <img 
+              class="play-bar-support"
+              src="@/assets/image/play-bar-support.png"
+            />
+            <img
+              :class="{playing}"
+              class="play-bar"
+              src="@/assets/image/play-bar.png" 
+            />
+            <div
+              class="img-outer-border"
+              ref="disc"
+            >
+              <div
+                class="img-outer"
+                ref="discRotate"
+              >
+                <div class="img-wrap">
+                  <img v-lazy="$utils.genImgUrl(currentSong.img, 400)" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="right">
+            <div class="name-wrap">
+              <p class="name">{{ currentSong.name }}</p>
+              <span
+                @click="onGoMv"
+                class="mv-tag"
+                v-if="currentSong.mvId"
+              >MV</span>
+            </div>
+            <div class="desc">
+              <div class="desc-item">
+                <span class="label">歌手：</span>
+                <div class="value">{{ currentSong.artistsText }}</div>
+              </div>
+            </div>
+            
+            <empty>还没有歌词哦~</empty>
+          </div>
         </div>
         <div class="bottom">
           <div class="left">
@@ -153,6 +194,19 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@keyframes rotate {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+$img-left-padding: 36px;
+$img-outer-border-d: 320px;
+$img-outer-d: 300px;
 
 .player {
   position: fixed;
@@ -170,6 +224,94 @@ export default {
   .content {
     max-width: 870px;
     margin: auto;
+
+    .song {
+      display: flex;
+
+      .left {
+        position: relative;
+        padding: 80px 70px 0 $img-left-padding;
+        display: flex;
+        justify-content: center;
+
+        $support-d: 30px;
+        $support-d-half: $support-d / 2;
+        .play-bar-support {
+          position: absolute;
+          left: $img-left-padding + $img-outer-border-d / 2 - $support-d / 2;
+          top: -$support-d-half;
+          width: $support-d;
+          height: $support-d;
+          z-index: 2;
+        }
+
+        .play-bar {
+          $w: 100px;
+          $h: 146px;
+          position: absolute;
+          top: 0;
+          left: $img-left-padding + $img-outer-border-d / 2 -6px;
+          width: $w;
+          height: $h;
+          z-index: 1;
+          transform-origin: 0 0; // 等价于left top
+          transform: rotate(-30deg);
+          transition: all 0.3s;
+
+          &.playing {
+            transform: rotate(5deg);
+          }
+        }
+
+        .img-outer-border {
+          @include round($img-outer-border-d);
+          @include flex-center;
+          background: var(--song-shallow-grey-bg);
+
+          .img-outer {
+            @include round($img-outer-d);
+            @include flex-center;
+            background: $black;
+            background: linear-gradient(-45deg, #333540, #070708, #333540);
+            animation: rorate 20s linear infinite;
+
+            &.paused {
+              animation-play-state: paused;
+            }
+
+            .img-wrap {
+              @include img-wrap(200px);
+
+              img {
+                border-radius: 50%;
+              }
+            }
+          }
+        }
+      }
+
+      .right {
+        flex: 1;
+        padding-top: 45px;
+        .name-wrap {
+          display: flex;
+          align-items: center;
+          margin-bottom: 16px;
+
+          .name {
+            font-size: $font-size-title-lg;
+            color: var(--font-color-white);
+          }
+          
+          .mv-tag {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px;
+            border: 1px solid currentColor;
+          }
+        }
+      }
+    }
 
     .bottom {
       display: flex;
