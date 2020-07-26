@@ -25,23 +25,23 @@ export function createSong (song) {
   }
 }
 
-export async function getSongImg(id, albumId) {
+export async function getSongImg (id, albumId) {
   if (!isDef(albumId)) {
     throw new Error('need albumId')
   }
   const { songs } = await getAlbum(albumId)
   const {
     al: { picUrl }
-  } = songs.find(({ id: songId }) => songId === id ) || {}
+  } = songs.find(({ id: songId }) => songId === id) || {}
   return picUrl
 }
 
-export function getArtistsText(artists) {
-  return (artists || []).map(({name}) => name).join('/')
+export function getArtistsText (artists) {
+  return (artists || []).map(({ name }) => name).join('/')
 }
 
 // 有时候虽然有mvId 但是请求却404，所以跳转前先请求一把
-export async function goMvWithCheck(id) {
+export async function goMvWithCheck (id) {
   try {
     await getMvDetail(id)
     goMv(id)
@@ -50,6 +50,6 @@ export async function goMvWithCheck(id) {
   }
 }
 
-export function goMv(id) {
+export function goMv (id) {
   router.push(`/mv/${id}`)
 }
