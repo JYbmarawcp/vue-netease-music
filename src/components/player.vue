@@ -1,26 +1,21 @@
 <template>
   <transition name="slide">
-    <div
-      v-if="hasCurrentSong"
-      class="player"
-    >
+    <div v-if="hasCurrentSong" class="player">
       <div class="content">
         <div class="song">
           <div class="left">
-            <img 
+            <img
               class="play-bar-support"
               src="@/assets/image/play-bar-support.png"
             />
             <img
-              :class="{playing}"
+              :class="{ playing }"
               class="play-bar"
-              src="@/assets/image/play-bar.png" 
+              src="@/assets/image/play-bar.png"
             />
-            <div
-              class="img-outer-border"
-              ref="disc"
-            >
+            <div class="img-outer-border" ref="disc">
               <div
+                :class="{ paused: !playing }"
                 class="img-outer"
                 ref="discRotate"
               >
@@ -33,11 +28,9 @@
           <div class="right">
             <div class="name-wrap">
               <p class="name">{{ currentSong.name }}</p>
-              <span
-                @click="onGoMv"
-                class="mv-tag"
-                v-if="currentSong.mvId"
-              >MV</span>
+              <span @click="onGoMv" class="mv-tag" v-if="currentSong.mvId"
+                >MV</span
+              >
             </div>
             <div class="desc">
               <div class="desc-item">
@@ -45,8 +38,17 @@
                 <div class="value">{{ currentSong.artistsText }}</div>
               </div>
             </div>
-            
+
             <empty>还没有歌词哦~</empty>
+            <Scroller :data="lyric" class="lyric-wrap" ref="scroller">
+              <div>
+                <div cl v-for="(l, index) in lyric" :key="index" ref="lyric">
+                  <p class="lyric-text">
+                    {{ l }}
+                  </p>
+                </div>
+              </div>
+            </Scroller>
           </div>
         </div>
         <div class="bottom">
@@ -57,13 +59,8 @@
               v-if="currentSong.id"
             />
           </div>
-          <div 
-            class="right"
-          >
-            <Loading
-              :loading="simiLoading"
-              v-if="simiLoading"
-            />
+          <div class="right">
+            <Loading :loading="simiLoading" v-if="simiLoading" />
             <div v-else>
               <div class="simi-playlists">
                 <p class="title">包含这首歌的歌单</p>
@@ -80,7 +77,9 @@
                     <template v-slot:desc>
                       <div class="desc">
                         <Icon :size="12" type="play" color="shallow" />
-                        <p class="count">{{$utils.formatNumber(simiPlaylist.playCount)}}</p>
+                        <p class="count">
+                          {{ $utils.formatNumber(simiPlaylist.playCount) }}
+                        </p>
                       </div>
                     </template>
                   </Card>
@@ -115,16 +114,23 @@
 </template>
 
 <script>
-import { getSimiPlaylists, getSimiSongs } from "@/api"
-import { createSong } from "@/utils"
-import Comments from "@/components/comments"
-import { mapState, mapMutations, mapActions, mapGetters } from "@/store/helper/music"
+import { getLyric, getSimiPlaylists, getSimiSongs } from '@/api'
+import lyricParser from '@/utils/lrcparse'
+import { isDef, createSong } from '@/utils'
+import Comments from '@/components/comments'
+import {
+  mapState,
+  mapMutations,
+  mapActions,
+  mapGetters,
+} from '@/store/helper/music'
 export default {
-  created () {
-    
-  },
-  data () {
+  created() {},
+  data() {
     return {
+      lyric: [],
+      tlyric: [],
+      nolyric: false,
       simiLoading: false,
       simiPlaylists: [],
       simiSongs: [],
@@ -134,23 +140,32 @@ export default {
     async updateSong() {
       this.updateSimi()
     },
+    async updateLyric() {
+      const result = await getLyric(this.currentSong.id)
+      this.nolyric = !isDef(result.lrc) || result.lrc.lyric
+      if (!this.nolyric) {
+        const { lyric, tlyric } = lyricParser(result)
+        this.lyric = lyric
+        this.tlyric = tlyric
+      }
+    },
     async updateSimi() {
       this.simiLoading = true
       const [simiPlaylists, simiSongs] = await Promise.all([
         getSimiPlaylists(this.currentSong.id),
-        getSimiSongs(this.currentSong.id)
+        getSimiSongs(this.currentSong.id),
       ]).finally(() => {
         this.simiLoading = false
       })
       this.simiPlaylists = simiPlaylists.playlists
-      this.simiSongs = simiSongs.songs.map(song => {
+      this.simiSongs = simiSongs.songs.map((song) => {
         const {
           id,
           name,
           artists,
           mvid,
           album: { picUrl },
-          duration
+          duration,
         } = song
         return createSong({
           id,
@@ -158,7 +173,7 @@ export default {
           artists,
           duration,
           img: picUrl,
-          mvId: mvid
+          mvId: mvid,
         })
       })
     },
@@ -171,25 +186,24 @@ export default {
       this.addToPlaylist(song)
     },
     ...mapMutations([]),
-    ...mapActions(["startSong", "addToPlaylist"])
+    ...mapActions(['startSong', 'addToPlaylist']),
   },
   computed: {
-    ...mapState(["currentSong"]),
-    ...mapGetters(["hasCurrentSong"])
+    ...mapState(['currentSong', 'playing']),
+    ...mapGetters(['hasCurrentSong']),
   },
   watch: {
     currentSong(newSong, oldSong) {
-      
       if (newSong.id === oldSong.id) {
         return
       }
       // 如果歌曲详情显示状态切歌 需要拉去歌曲相关信息
       this.updateSong()
-    }
+    },
   },
   components: {
-    Comments
-  }
+    Comments,
+  },
 }
 </script>
 
@@ -302,12 +316,35 @@ $img-outer-d: 300px;
             font-size: $font-size-title-lg;
             color: var(--font-color-white);
           }
-          
+
           .mv-tag {
             display: inline-block;
             margin-left: 8px;
             padding: 2px;
             border: 1px solid currentColor;
+            border-radius: 2px;
+            color: $theme-color;
+            cursor: pointer;
+          }
+        }
+
+        .desc {
+          display: flex;
+          font-size: $font-size-sm;
+          margin-bottom: 30px;
+
+          .desc-item {
+            display: flex;
+            margin-right: 32px;
+
+            .label {
+              display: inline-block;
+              margin-right: 4px;
+            }
+
+            .value {
+              color: $blue;
+            }
           }
         }
       }
@@ -336,7 +373,7 @@ $img-outer-d: 300px;
             @include abs-center;
           }
         }
-        
+
         .simi-item {
           margin-bottom: 6px;
         }

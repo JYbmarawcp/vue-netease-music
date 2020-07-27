@@ -41,32 +41,32 @@ default: () => ({})
 
 - watch
   watch: {
-    a: function (val, oldVal) {
-      console.log('new: %s, old: %s', val, oldVal)
-    },
-    // 方法名
-    b: 'someMethod',
-    // 该回调会在任何被侦听的对象的 property 改变时被调用，不论其被嵌套多深
-    c: {
-      handler: function (val, oldVal) { /* ... */ },
-      deep: true
-    },
-    // 该回调将会在侦听开始之后被立即调用
-    d: {
-      handler: 'someMethod',
-      immediate: true
-    },
-    // 你可以传入回调数组，它们会被逐一调用
-    e: [
-      'handle1',
-      function handle2 (val, oldVal) { /* ... */ },
-      {
-        handler: function handle3 (val, oldVal) { /* ... */ },
-        /* ... */
-      }
-    ],
-    // watch vm.e.f's value: {g: 5}
-    'e.f': function (val, oldVal) { /* ... */ }
+  a: function (val, oldVal) {
+  console.log('new: %s, old: %s', val, oldVal)
+  },
+  // 方法名
+  b: 'someMethod',
+  // 该回调会在任何被侦听的对象的 property 改变时被调用，不论其被嵌套多深
+  c: {
+  handler: function (val, oldVal) { /_ ... _/ },
+  deep: true
+  },
+  // 该回调将会在侦听开始之后被立即调用
+  d: {
+  handler: 'someMethod',
+  immediate: true
+  },
+  // 你可以传入回调数组，它们会被逐一调用
+  e: [
+  'handle1',
+  function handle2 (val, oldVal) { /* ... */ },
+  {
+  handler: function handle3 (val, oldVal) { /* ... */ },
+  /* ... */
+  }
+  ],
+  // watch vm.e.f's value: {g: 5}
+  'e.f': function (val, oldVal) { /_ ... _/ }
   }
 
 - 让当前的元素滚动到浏览器窗口的可视区域内。定义动画过渡效果， 定义垂直方向，定义水平方向
@@ -92,67 +92,69 @@ default: () => ({})
   blur(px)给图像设置高斯模糊。"radius"一值设定高斯函数的标准差，或者是屏幕上以多少像素融在一起， 所以值越大越模糊
 - v-slot:header 可以被重写为 #header
 
+* v-loading 优雅的使用 loading
+  element-loading-text="拼命加载中"  设置 loading 文字
 
+element-loading-background="rgba(0, 0, 0, 0.8)" 设置 loading 背景
 
-* v-loading 优雅的使用loading
-element-loading-text="拼命加载中"  设置loading文字
+element-loading-spinner="el-icon-loading" 设置 loading 图标
 
-element-loading-background="rgba(0, 0, 0, 0.8)" 设置loading背景
+- inject 和 provide
+  provide 可以在祖先组件中指定我们想要提供给后代组件的数据或方法，而在任何后代组件中，我们都可以使用 inject 来接收 provide 提供的数据或方法。
 
-element-loading-spinner="el-icon-loading" 设置loading图标
+- 换肤
+  document.documentElement.style.setProperty(key, value) 来设置变量
 
-* inject 和 provide
-provide 可以在祖先组件中指定我们想要提供给后代组件的数据或方法，而在任何后代组件中，我们都可以使用 inject 来接收 provide 提供的数据或方法。
+- :show.sync
+  props 的绑定默认是单向的，我们要在组件内部更新 show 值，需要在父组件上添加 .sync 修饰符，以创建『双向绑定』：
+  <Message :show.sync="msgShow"/>
+  上面的代码会被 Vue 扩展为：
+  <Message :show="msgShow" @update:show="val => msgShow = val" />
+  因为父组件有 update:show 事件监听，所以我们能在组件内部使用 $emit 来关闭消息提示： this.$emit('update:show', false)
 
-* 换肤
-document.documentElement.style.setProperty(key, value) 来设置变量
+- undefined 若函数没有返回值则默认返回一个 undefined，布尔值为 fales
 
-* :show.sync
-props 的绑定默认是单向的，我们要在组件内部更新 show 值，需要在父组件上添加 .sync 修饰符，以创建『双向绑定』：
-<Message :show.sync="msgShow"/>
-上面的代码会被 Vue 扩展为：
-<Message :show="msgShow" @update:show="val => msgShow = val" />
-因为父组件有 update:show 事件监听，所以我们能在组件内部使用 $emit 来关闭消息提示： this.$emit('update:show', false)
-
-* undefined 若函数没有返回值则默认返回一个 undefined，布尔值为fales
-
-* Element.requestFullscreen() 方法用于发出异步请求使元素进入全屏模式。
-toFullScreen：全屏
-function toFullScreen(){    
-　　let elem = document.body;    
-　　elem.webkitRequestFullScreen    
-　　? elem.webkitRequestFullScreen()    
-　　: elem.mozRequestFullScreen    
-　　? elem.mozRequestFullScreen()    
-　　: elem.msRequestFullscreen    
-　　? elem.msRequestFullscreen()    
-　　: elem.requestFullScreen    
-　　? elem.requestFullScreen()    
-　　: alert("浏览器不支持全屏");
-}
+- Element.requestFullscreen() 方法用于发出异步请求使元素进入全屏模式。
+  toFullScreen：全屏
+  function toFullScreen(){  
+  　　 let elem = document.body;  
+  　　 elem.webkitRequestFullScreen  
+  　　? elem.webkitRequestFullScreen()  
+  　　: elem.mozRequestFullScreen  
+  　　? elem.mozRequestFullScreen()  
+  　　: elem.msRequestFullscreen  
+  　　? elem.msRequestFullscreen()  
+  　　: elem.requestFullScreen  
+  　　? elem.requestFullScreen()  
+  　　: alert("浏览器不支持全屏");
+  }
 
 exitFullscreen：退出全屏
-function exitFullscreen(){    
-　　let elem = parent.document;    
-　　elem.webkitCancelFullScreen    
-　　? elem.webkitCancelFullScreen()    
-　　: elem.mozCancelFullScreen    
-　　? elem.mozCancelFullScreen()    
-　　: elem.cancelFullScreen    
-　　? elem.cancelFullScreen()    
-　　: elem.msExitFullscreen    
-　　? elem.msExitFullscreen()    
-　　: elem.exitFullscreen    
-　　? elem.exitFullscreen()    
-　　: alert("切换失败,可尝试Esc退出");
+function exitFullscreen(){  
+　　 let elem = parent.document;  
+　　 elem.webkitCancelFullScreen  
+　　? elem.webkitCancelFullScreen()  
+　　: elem.mozCancelFullScreen  
+　　? elem.mozCancelFullScreen()  
+　　: elem.cancelFullScreen  
+　　? elem.cancelFullScreen()  
+　　: elem.msExitFullscreen  
+　　? elem.msExitFullscreen()  
+　　: elem.exitFullscreen  
+　　? elem.exitFullscreen()  
+　　: alert("切换失败,可尝试 Esc 退出");
 }
 是否全屏
 export function isFullscreen() {
-  return document.fullScreen ||
-    document.mozFullScreen ||
-    document.webkitIsFullScreen
+return document.fullScreen ||
+document.mozFullScreen ||
+document.webkitIsFullScreen
 }
 
-* 1turn 一圈
-* animation-play-state: paused; 暂停动画
-* border-color这个属性的初始值（Initial value）就是currentcolor
+- 1turn 一圈
+- animation-play-state: paused; 暂停动画
+- border-color 这个属性的初始值（Initial value）就是 currentcolor
+
+- decodeURIComponent() 函数可对 encodeURIComponent() 函数编码的 URI 进行解码。
+  http%3A%2F%2Fwww.w3school.com.cn%2FMy%20first%2F
+  http://www.w3school.com.cn/My first/

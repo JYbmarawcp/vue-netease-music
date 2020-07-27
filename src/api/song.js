@@ -8,8 +8,11 @@ export const getSongDetail = ids => request.get(`/song/detail?ids=${ids}`)
 export const getTopSongs = type => request.get(`/top/song?type=${type}`)
 
 // 歌单详情
-export const getListDetail = params => request.get('/playlist/detail', {params})
+export const getListDetail = params => request.get('/playlist/detail', { params })
 
 // 相似音乐
-export const getSimiSongs = (id, option) => 
+export const getSimiSongs = (id, option) =>
   requestWithoutLoading.get(`/simi/song?id=${id}`, option)
+
+// 歌词
+export const getLyric = id => request.get(`/lyric?id=${id}`)
