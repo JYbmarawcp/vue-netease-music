@@ -116,7 +116,7 @@
 <script>
 import { getLyric, getSimiPlaylists, getSimiSongs } from '@/api'
 import lyricParser from '@/utils/lrcparse'
-import { isDef, createSong } from '@/utils'
+import { debounce, isDef, createSong } from '@/utils'
 import Comments from '@/components/comments'
 import {
   mapState,
