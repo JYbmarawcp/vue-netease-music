@@ -40,11 +40,25 @@
             </div>
 
             <empty>还没有歌词哦~</empty>
-            <Scroller :data="lyric" class="lyric-wrap" ref="scroller">
+            <Scroller 
+              :data="lyric" 
+              class="lyric-wrap" 
+              ref="scroller"
+              @init="onInitScroller"
+            >
               <div>
-                <div cl v-for="(l, index) in lyric" :key="index" ref="lyric">
-                  <p class="lyric-text">
-                    {{ l }}
+                <div 
+                  v-for="(l, index) in lyricWithTranslation" 
+                  :key="index" 
+                  ref="lyric"
+                  class="lyric-item"
+                >
+                  <p 
+                    class="lyric-text"
+                    v-for="(content, contentIndex) in l.contents"
+                    :key="contentIndex"
+                  >
+                    {{ content }}
                   </p>
                 </div>
               </div>
@@ -124,8 +138,22 @@ import {
   mapActions,
   mapGetters,
 } from '@/store/helper/music'
+
+const WHEEL_TYPE = 'wheel'
+const SCROLL_TYPE = 'scroll'
+// 恢复自动滚动的定时器时间
+const AUTO_SCROLL_RECOVER_TIME = 1000
 export default {
-  created() {},
+  created() {
+    this.lyricScroll = {
+      [WHEEL_TYPE]: false,
+      [SCROLL_TYPE]: false
+    }
+    this.lyricTimer = {
+      [WHEEL_TYPE]: false,
+      [SCROLL_TYPE]: false
+    }
+  },
   data() {
     return {
       lyric: [],
@@ -138,11 +166,12 @@ export default {
   },
   methods: {
     async updateSong() {
+      this.updateLyric()
       this.updateSimi()
     },
     async updateLyric() {
       const result = await getLyric(this.currentSong.id)
-      this.nolyric = !isDef(result.lrc) || result.lrc.lyric
+      this.nolyric = !isDef(result.lrc) || !result.lrc.lyric
       if (!this.nolyric) {
         const { lyric, tlyric } = lyricParser(result)
         this.lyric = lyric
@@ -177,6 +206,24 @@ export default {
         })
       })
     },
+    onInitScroller(scroller) {
+      const onScrollStart = type => {
+        this.clearTimer(type)
+        this.lyricScroll[type] = true
+      }
+      const onScrollEnd = type => {
+        // 滚动结束后两秒 歌词开始自动滚动
+        this.clearTimer(type)
+        this.lyricTimer[type] = setTimeout(() => {
+          this.lyricScrolling[type] = false
+        }, AUTO_SCROLL_RECOVER_TIME);
+      }
+      scroller.on("scrollStart", onScrollStart.bind(null, SCROLL_TYPE))
+      scroller.on("scrollEnd", onScrollEnd.bind(null, SCROLL_TYPE))
+    },
+    clearTimer(type) {
+      this.lyricTimer[type] && clearTimeout(this.lyricTimer[type])
+    },
     onClickPlaylist(id) {
       // 点击的歌单和当前打开的单页是同一个 直接关闭player
       this.$router.push(`/playlist/${id}`)
@@ -185,10 +232,42 @@ export default {
       this.startSong(song)
       this.addToPlaylist(song)
     },
+    resizeScroller: debounce(function() {
+      this.$refs.scroller.getScroller().refresh()
+    }, 500),
     ...mapMutations([]),
     ...mapActions(['startSong', 'addToPlaylist']),
   },
   computed: {
+    lyricWithTranslation() {
+      let ret = []
+      // 空内容的去除
+      const lyricFiltered = this.lyric.filter(({ content }) => Boolean(content))
+      // content统一转换数组形式
+      if (lyricFiltered.length) {
+        lyricFiltered.forEach(l => {
+          const { time, content } = l
+          const lyricItem = { time, content, contents: [content] }
+          const sameTimeTLyric = this.tlyric.find(
+            ({time: tLyricTime }) => tLyricTime === time
+          )
+          if (sameTimeTLyric) {
+            const { content: tLyricContent } = sameTimeTLyric
+            if (content) {
+              lyricItem.contents.push(tLyricContent)
+            }
+          }
+          ret.push(lyricItem)
+        })
+      } else {
+        ret = lyricFiltered.map(({ time, content }) => ({
+          time,
+          content,
+          contents: [content]
+        }))
+      }
+      return ret
+    },
     ...mapState(['currentSong', 'playing']),
     ...mapGetters(['hasCurrentSong']),
   },

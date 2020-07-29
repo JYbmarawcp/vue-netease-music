@@ -27,7 +27,14 @@ export default {
   data() {
     return {}
   },
-  methods: {},
+  methods: {
+    getScroller() {
+      return this.scroller
+    },
+    refresh() {
+      this.scroller.refresh()
+    }
+  },
   watch: {
     data: {
       handler() {
