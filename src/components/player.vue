@@ -39,15 +39,17 @@
               </div>
             </div>
 
-            <empty>还没有歌词哦~</empty>
+            <empty v-if="nolyric">还没有歌词哦~</empty>
             <Scroller 
               :data="lyric" 
               class="lyric-wrap" 
               ref="scroller"
               @init="onInitScroller"
+              v-else
             >
               <div>
-                <div 
+                <div
+                  :class="getActiveCls(index)"
                   v-for="(l, index) in lyricWithTranslation" 
                   :key="index" 
                   ref="lyric"
@@ -206,6 +208,9 @@ export default {
         })
       })
     },
+    getActiveCls(index) {
+      return this.activeLyricIndex === index ? "active" : ""
+    },
     onInitScroller(scroller) {
       const onScrollStart = type => {
         this.clearTimer(type)
@@ -239,6 +244,17 @@ export default {
     ...mapActions(['startSong', 'addToPlaylist']),
   },
   computed: {
+    activeLyricIndex() {
+      return this.lyricWithTranslation
+        ? this.lyricWithTranslation.findIndex((l, index) => {
+          const nextLyric = this.lyricWithTranslation[index + 1]
+          return (
+            this.currentTime >= l.time &&
+            (nextLyric ? this.currentTime < nextLyric.time : true)
+          )
+        })
+        : -1
+    },
     lyricWithTranslation() {
       let ret = []
       // 空内容的去除
@@ -268,7 +284,7 @@ export default {
       }
       return ret
     },
-    ...mapState(['currentSong', 'playing']),
+    ...mapState(['currentSong', 'currentTime', 'playing']),
     ...mapGetters(['hasCurrentSong']),
   },
   watch: {
@@ -423,6 +439,35 @@ $img-outer-d: 300px;
 
             .value {
               color: $blue;
+            }
+          }
+        }
+
+        .lyric-wrap {
+          width: 380px;
+          height: 350px;
+          mask-image: linear-gradient(
+            180deg,
+          hsla(0, 0%, 100%, 0) 0,
+          hsla(0, 0%, 100%, 0.6) 15%,
+          #fff 25%,
+          #fff 75%,
+          hsla(0, 0%, 100%, 0.6) 85%,
+          hsla(0, 0%, 100%, 0)
+          );
+
+          .lyric-item {
+            margin-bottom: 16px;
+            font-size: $font-size-sm;
+
+            &.active {
+              font-size: $font-size;
+              color: var(--font-color-white);
+              font-weight: $font-weight-bold;
+            }
+
+            .lyric-text {
+              margin-bottom: 8px;
             }
           }
         }
