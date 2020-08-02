@@ -2,23 +2,23 @@
   <div class="mini-player" id="mini-player">
     <!-- 歌曲内容 -->
     <div class="song">
-      <template>
-        <div class="img-wrap">
+      <template v-if="hasCurrentSong">
+        <div @click="togglePlayerShow" class="img-wrap">
           <div class="mask"></div>
-          <img v-lazy="$utils.genImgUrl(currentSong.img, 80)" class="blur" >
+          <img v-lazy="$utils.genImgUrl(currentSong.img, 80)" class="blur" />
           <div class="player-control">
             <Icon :size="24" :type="playControlIcon" color="white" />
           </div>
         </div>
         <div class="content">
           <div class="top">
-            <p class="name">{{currentSong.name}}</p>
+            <p class="name">{{ currentSong.name }}</p>
             <p class="split">-</p>
-            <p class="artists">{{currentSong.artistsText}}</p>
+            <p class="artists">{{ currentSong.artistsText }}</p>
           </div>
           <div class="time">
             <span class="played-time">
-              {{}}
+              {{ $utils.formatTime(currentTime) }}
             </span>
             <span class="split">/</span>
             <span class="total-time">
@@ -30,28 +30,20 @@
     </div>
     <!-- 控制台 -->
     <div class="control">
-      <Icon :size="24" class="icon" type="prev" />
-      <el-popover
-        placement="top"
-        trigger="manual"
-        width="160"
-      >
+      <Icon :size="24" @click="prev" class="icon" type="prev" />
+      <el-popover placement="top" trigger="manual" width="160">
         <div @click="togglePlaying" slot="reference" class="play-icon">
           <Icon :size="24" :type="playIcon" />
         </div>
       </el-popover>
-      <Icon :size="24" class="icon" type="next" />
+      <Icon :size="24" @click="next" class="icon" type="next" />
     </div>
 
     <div class="mode">
-      <Share :shareUrl="shareUrl" class="mode-item" />
+      <Share :shareUrl="shareUrl" class="mode-item" v-show="hasCurrentSong" />
 
       <!-- 模式 -->
-      <el-popover
-        placement="top"
-        trigger="hover"
-        width="160"
-      >
+      <el-popover placement="top" trigger="hover" width="160">
         <p>{{ playModeText }}</p>
         <Icon
           :size="20"
@@ -63,7 +55,7 @@
       </el-popover>
       <!-- 播放列表 -->
       <el-popover
-      :value="isPlaylistPromptShow"
+        :value="isPlaylistPromptShow"
         placement="top"
         trigger="manual"
         width="160"
@@ -85,10 +77,13 @@
       <Icon :size="20" @click="goGitHub" class="mode-item" type="github" />
     </div>
 
-    <div class="progress-bar-wrap">
-
-    </div>
-    <audio :src="currentSong.url" ref="audio" />
+    <div class="progress-bar-wrap"></div>
+    <audio
+      :src="currentSong.url"
+      @canplay="ready"
+      @ended="end"
+      ref="audio"
+    ></audio>
   </div>
 </template>
 
@@ -96,24 +91,22 @@
 import {
   mapState,
   mapMutations,
-  // mapGetters,
-  // mapActions
-} from "@/store/helper/music"
-import Share from "@/components/share"
+  mapGetters,
+  mapActions,
+} from '@/store/helper/music'
+import Share from '@/components/share'
 import storage from 'good-storage'
-import { VOLUME_KEY, playModeMap } from "@/utils"
+import { VOLUME_KEY, playModeMap } from '@/utils'
 
 const DEFAULT_VOLUME = 0.75
 export default {
-  data () {
+  data() {
     return {
       songReady: false,
-      volume: storage.get(VOLUME_KEY, DEFAULT_VOLUME)
+      volume: storage.get(VOLUME_KEY, DEFAULT_VOLUME),
     }
   },
-  mounted () {
-    
-  },
+  mounted() {},
   methods: {
     togglePlaying() {
       if (!this.currentSong.id) {
@@ -130,17 +123,26 @@ export default {
           await this.audio.play()
         } catch (error) {
           // 提示用户手动播放
-          
+          this.setPlayingState(false)
         }
       }
     },
     pause() {
       this.audio.pause()
     },
+    prev() {
+      this.startSong(this.prevSong)
+    },
+    next() {
+      this.startSong(this.nextSong)
+    },
+    end() {
+      this.next()
+    },
     onChangePlayMode() {
       const modeKeys = Object.keys(playModeMap)
       const currentModeIndex = modeKeys.findIndex(
-        key => playModeMap[key].code === this.playMode
+        (key) => playModeMap[key].code === this.playMode
       )
       const nextIndx = (currentModeIndex + 1) % modeKeys.length
       const nextModeKey = modeKeys[nextIndx]
@@ -153,27 +155,53 @@ export default {
     togglePlaylistShow() {
       this.setPlaylistShow(!this.isPlaylistShow)
     },
+    togglePlayerShow() {
+      this.setPlayerShow(!this.isPlayerShow)
+    },
     goGitHub() {
-      window.open("https://github.com/JYbmarawcp/vue-netease-music")
+      window.open('https://github.com/JYbmarawcp/vue-netease-music')
     },
     ...mapMutations([
-      "setCurrentTime",
-      "setPlayingState",
-      "setPlayMode",
-      "setPlaylistShow",
+      'setCurrentTime',
+      'setPlayingState',
+      'setPlayMode',
+      'setPlaylistShow',
+      'setPlayerShow',
     ]),
-
+    ...mapActions(['startSong']),
   },
   watch: {
+    currentSong(newSong, oldSong) {
+      // 清空了歌曲
+      if (!newSong.id) {
+        this.audio.pause()
+        this.audio.currentTime = 0
+        return
+      }
+      // 单曲循环
+      if (oldSong && newSong.id === oldSong.id) {
+        this.setCurrentTime(0)
+        this.audio.currentTime = 0
+        this.play()
+        return
+      }
+      this.songReady = false
+      if (this.timer) {
+        clearTimeout(this.timer)
+      }
+      this.timer = setTimeout(() => {
+        this.play()
+      }, 1000)
+    },
     playing(newPlaying) {
       this.$nextTick(() => {
         newPlaying ? this.play() : this.pause()
       })
-    }
+    },
   },
   computed: {
     playIcon() {
-      return this.playing ? "pause" : "play"
+      return this.playing ? 'pause' : 'play'
     },
     currentMode() {
       return playModeMap[this.playMode]
@@ -188,25 +216,26 @@ export default {
       return this.$refs.audio
     },
     playControlIcon() {
-      return "shrink"
+      return 'shrink'
     },
     shareUrl() {
       return `https://music.163.com/#/song?id=${this.currentSong.id}`
     },
 
-    
     ...mapState([
-      "currentSong",
-      "currentTime",
-      "playing",
-      "playMode",
-      "isPlaylistShow",
-      "isPlaylistPromptShow",
-    ])
+      'currentSong',
+      'currentTime',
+      'playing',
+      'playMode',
+      'isPlaylistShow',
+      'isPlaylistPromptShow',
+      'isPlayerShow',
+    ]),
+    ...mapGetters(['hasCurrentSong', 'prevSong', 'nextSong']),
   },
   components: {
-    Share
-  }
+    Share,
+  },
 }
 </script>
 
@@ -269,7 +298,7 @@ export default {
           color: var(--font-color-white);
           @include text-ellipsis;
         }
-        
+
         .split {
           font-size: $font-size-xs;
           margin: 0 4px;
@@ -310,7 +339,7 @@ export default {
       border-radius: 50%;
       background: $theme-color;
       cursor: pointer;
-      
+
       i {
         color: #fff;
       }

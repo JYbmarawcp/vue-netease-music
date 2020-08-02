@@ -27,12 +27,20 @@ export default {
     commit('setPlayHistory', playHistoryCopy)
     storage.set(PLAY_HISTORY_KEY, playHistoryCopy)
   },
-  clearPlaylist({commit }) {
+  clearPlaylist({ commit }) {
     commit('setPlaylist', [])
   },
   clearHistory({ commit }) {
     const history = []
     commit('setPlayHistory', history)
     storage.set(PLAY_HISTORY_KEY, history)
+  },
+  addToPlaylist({ commit, state }, song) {
+    const { playlist } = state
+    const copy = playlist.slice
+    if (!copy.find(({id}) => id === song.id)) {
+      copy.unshift(song)
+      commit('setPlaylist', copy)
+    }
   }
 }

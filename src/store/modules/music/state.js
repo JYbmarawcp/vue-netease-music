@@ -12,7 +12,10 @@ export default {
   playMode: "sequence",
   // 播放列表显示
   isPlaylistShow: false,
-
+  // 歌曲详情页显示
+  isPlayerShow: false,
+  // 播放提示显示
+  isPlaylistPromptShow: false,
   // 播放列表数据
   playlist: [],
   // 播放历史数据

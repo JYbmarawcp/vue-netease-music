@@ -1,6 +1,6 @@
 <template>
   <transition name="slide">
-    <div v-if="hasCurrentSong" class="player">
+    <div v-if="hasCurrentSong" :class="getPlayerShowCls()" class="player">
       <div class="content">
         <div class="song">
           <div class="left">
@@ -40,9 +40,9 @@
             </div>
 
             <empty v-if="nolyric">还没有歌词哦~</empty>
-            <Scroller 
-              :data="lyric" 
-              class="lyric-wrap" 
+            <Scroller
+              :data="lyric"
+              class="lyric-wrap"
               ref="scroller"
               @init="onInitScroller"
               v-else
@@ -50,12 +50,12 @@
               <div>
                 <div
                   :class="getActiveCls(index)"
-                  v-for="(l, index) in lyricWithTranslation" 
-                  :key="index" 
+                  v-for="(l, index) in lyricWithTranslation"
+                  :key="index"
                   ref="lyric"
                   class="lyric-item"
                 >
-                  <p 
+                  <p
                     class="lyric-text"
                     v-for="(content, contentIndex) in l.contents"
                     :key="contentIndex"
@@ -75,10 +75,10 @@
               v-if="currentSong.id"
             />
           </div>
-          <div class="right">
+          <div class="right" v-if="simiPlaylists.concat(simiSongs).length">
             <Loading :loading="simiLoading" v-if="simiLoading" />
             <div v-else>
-              <div class="simi-playlists">
+              <div class="simi-playlists" v-if="simiPlaylists.length">
                 <p class="title">包含这首歌的歌单</p>
                 <div
                   v-for="simiPlaylist in simiPlaylists"
@@ -102,7 +102,7 @@
                 </div>
               </div>
 
-              <div class="simi-songs">
+              <div class="simi-songs" v-if="simiSongs.length">
                 <p class="title">相似歌曲</p>
                 <div
                   class="simi-songs"
@@ -132,7 +132,7 @@
 <script>
 import { getLyric, getSimiPlaylists, getSimiSongs } from '@/api'
 import lyricParser from '@/utils/lrcparse'
-import { debounce, isDef, createSong } from '@/utils'
+import { debounce, isDef, createSong, goMvWithCheck } from '@/utils'
 import Comments from '@/components/comments'
 import {
   mapState,
@@ -147,13 +147,13 @@ const SCROLL_TYPE = 'scroll'
 const AUTO_SCROLL_RECOVER_TIME = 1000
 export default {
   created() {
-    this.lyricScroll = {
+    this.lyricScrolling = {
       [WHEEL_TYPE]: false,
-      [SCROLL_TYPE]: false
+      [SCROLL_TYPE]: false,
     }
     this.lyricTimer = {
-      [WHEEL_TYPE]: false,
-      [SCROLL_TYPE]: false
+      [WHEEL_TYPE]: null,
+      [SCROLL_TYPE]: null,
     }
   },
   data() {
@@ -208,51 +208,78 @@ export default {
         })
       })
     },
+    getPlayerShowCls() {
+      return this.isPlayerShow ? 'show' : 'hide'
+    },
     getActiveCls(index) {
-      return this.activeLyricIndex === index ? "active" : ""
+      return this.activeLyricIndex === index ? 'active' : ''
     },
     onInitScroller(scroller) {
-      const onScrollStart = type => {
+      const onScrollStart = (type) => {
         this.clearTimer(type)
-        this.lyricScroll[type] = true
+        this.lyricScrolling[type] = true
       }
-      const onScrollEnd = type => {
+      const onScrollEnd = (type) => {
         // 滚动结束后两秒 歌词开始自动滚动
         this.clearTimer(type)
         this.lyricTimer[type] = setTimeout(() => {
           this.lyricScrolling[type] = false
-        }, AUTO_SCROLL_RECOVER_TIME);
+        }, AUTO_SCROLL_RECOVER_TIME)
       }
-      scroller.on("scrollStart", onScrollStart.bind(null, SCROLL_TYPE))
-      scroller.on("scrollEnd", onScrollEnd.bind(null, SCROLL_TYPE))
+      scroller.on('scrollStart', onScrollStart.bind(null, SCROLL_TYPE))
+      scroller.on('scrollEnd', onScrollEnd.bind(null, SCROLL_TYPE))
     },
     clearTimer(type) {
       this.lyricTimer[type] && clearTimeout(this.lyricTimer[type])
     },
+    scrollToActiveLyric() {
+      if (this.activeLyricIndex !== -1) {
+        const { scroller, lyric } = this.$refs
+        if (lyric && lyric[this.activeLyricIndex]) {
+          scroller
+            .getScroller()
+            .scrollToElement(lyric[this.activeLyricIndex], 200, 0, true)
+        }
+      }
+    },
     onClickPlaylist(id) {
       // 点击的歌单和当前打开的单页是同一个 直接关闭player
-      this.$router.push(`/playlist/${id}`)
+      if (id === Number(this.$router.params.id)) {
+        this.setPlayerShow(false)
+      } else {
+        this.$router.push(`/playlist/${id}`)
+      }
     },
     onClickSong(song) {
       this.startSong(song)
       this.addToPlaylist(song)
     },
+    onGoMv() {
+      this.setPlayerShow(false)
+      goMvWithCheck(this.currentSong.mvId)
+    },
     resizeScroller: debounce(function() {
       this.$refs.scroller.getScroller().refresh()
     }, 500),
-    ...mapMutations([]),
+    addResizeListener() {
+      window.addEventListener('resize', this.resizeScroller)
+    },
+    removeResizeListener() {
+      window.removeEventListener('resize', this.resizeScroller)
+    },
+    ...mapMutations(['setPlayerShow']),
     ...mapActions(['startSong', 'addToPlaylist']),
   },
   computed: {
     activeLyricIndex() {
       return this.lyricWithTranslation
         ? this.lyricWithTranslation.findIndex((l, index) => {
-          const nextLyric = this.lyricWithTranslation[index + 1]
-          return (
-            this.currentTime >= l.time &&
-            (nextLyric ? this.currentTime < nextLyric.time : true)
-          )
-        })
+            const nextLyric = this.lyricWithTranslation[index + 1]
+            return (
+              this.currentTime >= l.time &&
+              (nextLyric ? this.currentTime < nextLyric.time : true)
+            )
+          })
         : -1
     },
     lyricWithTranslation() {
@@ -261,11 +288,11 @@ export default {
       const lyricFiltered = this.lyric.filter(({ content }) => Boolean(content))
       // content统一转换数组形式
       if (lyricFiltered.length) {
-        lyricFiltered.forEach(l => {
+        lyricFiltered.forEach((l) => {
           const { time, content } = l
           const lyricItem = { time, content, contents: [content] }
           const sameTimeTLyric = this.tlyric.find(
-            ({time: tLyricTime }) => tLyricTime === time
+            ({ time: tLyricTime }) => tLyricTime === time
           )
           if (sameTimeTLyric) {
             const { content: tLyricContent } = sameTimeTLyric
@@ -279,22 +306,54 @@ export default {
         ret = lyricFiltered.map(({ time, content }) => ({
           time,
           content,
-          contents: [content]
+          contents: [content],
         }))
       }
       return ret
     },
-    ...mapState(['currentSong', 'currentTime', 'playing']),
+    ...mapState(['currentSong', 'currentTime', 'playing', 'isPlayerShow']),
     ...mapGetters(['hasCurrentSong']),
   },
   watch: {
+    isPlayerShow(show) {
+      if (show) {
+        // 歌词短期内不会变化 所以只拉取相似信息
+        this.updateSimi()
+        this.addResizeListener()
+        this.$nextTick(() => {
+          this.scrollToActiveLyric()
+        })
+      } else {
+        this.removeResizeListener()
+      }
+    },
     currentSong(newSong, oldSong) {
+      if (!newSong.id) {
+        this.setPlayerShow(false)
+      }
       if (newSong.id === oldSong.id) {
         return
       }
       // 如果歌曲详情显示状态切歌 需要拉去歌曲相关信息
-      this.updateSong()
+      if (this.isPlayerShow) {
+        this.updateSong()
+      } else {
+        // 否则只更新歌词
+        this.updateLyric()
+      }
     },
+    activeLyricIndex(newIndex, oldIndex) {
+      if (
+        newIndex !== oldIndex &&
+        !this.lyricScrolling[WHEEL_TYPE] &&
+        !this.lyricScrolling[SCROLL_TYPE]
+      ) {
+        this.scrollToActiveLyric()
+      }
+    },
+    $route() {
+      this.setPlayerShow(false)
+    }
   },
   components: {
     Comments,
@@ -329,6 +388,14 @@ $img-outer-d: 300px;
   overflow: hidden;
   overflow-y: auto;
   transition: transform 0.5s;
+
+  &.hide {
+    transform: translateY(105%);
+  }
+  
+  &.show {
+    transform: none;
+  }
 
   .content {
     max-width: 870px;
@@ -448,12 +515,12 @@ $img-outer-d: 300px;
           height: 350px;
           mask-image: linear-gradient(
             180deg,
-          hsla(0, 0%, 100%, 0) 0,
-          hsla(0, 0%, 100%, 0.6) 15%,
-          #fff 25%,
-          #fff 75%,
-          hsla(0, 0%, 100%, 0.6) 85%,
-          hsla(0, 0%, 100%, 0)
+            hsla(0, 0%, 100%, 0) 0,
+            hsla(0, 0%, 100%, 0.6) 15%,
+            #fff 25%,
+            #fff 75%,
+            hsla(0, 0%, 100%, 0.6) 85%,
+            hsla(0, 0%, 100%, 0)
           );
 
           .lyric-item {

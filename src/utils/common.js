@@ -69,6 +69,24 @@ export function isLast(index, arr) {
   return index === arr.length - 1
 }
 
+export function shallowEqual(a, b, compareKey) {
+  if (a.length !== b.length) {
+    return false
+  }
+  for (let i = 0; i < a.length; i++) {
+    let compareA = a[i]
+    let compareB = b[i]
+    if (compareKey) {
+      compareA = compareA[compareKey]
+      compareB = compareB[compareKey]
+    }
+    if (!Object.is(compareA, compareB)) {
+      return false
+    }
+  }
+  return true
+}
+
 export function notify (message, type) {
   const params = {
     message,

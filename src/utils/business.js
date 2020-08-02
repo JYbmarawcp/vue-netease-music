@@ -15,6 +15,7 @@ export function createSong (song) {
     artists,
     duration,
     albumName,
+    url: genSongPlayUrl(song.id),
     artistsText: getArtistsText(artists),
     durationSecond: duration / 1000,
     // 专辑 如果需要额外请求封面的话必须加上
@@ -52,4 +53,8 @@ export async function goMvWithCheck (id) {
 
 export function goMv (id) {
   router.push(`/mv/${id}`)
+}
+
+function genSongPlayUrl(id) {
+  return `https://music.163.com/song/media/outer/url?id=${id}.mp3`
 }
