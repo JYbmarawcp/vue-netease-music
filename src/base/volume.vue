@@ -9,7 +9,7 @@
     <div class="progress-wrap">
       <ProgressBar 
         :percent="volumePercent"
-        @progressChange="onProgressChange"
+        @percentChange="onProgressChange"
         alwaysShowBtn
       />
     </div>

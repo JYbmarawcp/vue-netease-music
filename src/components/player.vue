@@ -426,7 +426,7 @@ $img-outer-d: 300px;
           $h: 146px;
           position: absolute;
           top: 0;
-          left: $img-left-padding + $img-outer-border-d / 2 -6px;
+          left: $img-left-padding + $img-outer-border-d / 2 - 6px;
           width: $w;
           height: $h;
           z-index: 1;
@@ -449,7 +449,7 @@ $img-outer-d: 300px;
             @include flex-center;
             background: $black;
             background: linear-gradient(-45deg, #333540, #070708, #333540);
-            animation: rorate 20s linear infinite;
+            animation: rotate 20s linear infinite;
 
             &.paused {
               animation-play-state: paused;
@@ -514,6 +514,15 @@ $img-outer-d: 300px;
           width: 380px;
           height: 350px;
           mask-image: linear-gradient(
+            180deg,
+            hsla(0, 0%, 100%, 0) 0,
+            hsla(0, 0%, 100%, 0.6) 15%,
+            #fff 25%,
+            #fff 75%,
+            hsla(0, 0%, 100%, 0.6) 85%,
+            hsla(0, 0%, 100%, 0)
+          );
+          -webkit-mask-image: linear-gradient(
             180deg,
             hsla(0, 0%, 100%, 0) 0,
             hsla(0, 0%, 100%, 0.6) 15%,

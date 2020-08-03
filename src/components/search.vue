@@ -68,7 +68,10 @@
 
           <div class="block">
             <p class="title">搜索历史</p>
-            <div class="tags" v-if="searchHistorys.length">
+            <div
+              class="tags" 
+              v-if="searchHistorys.length"
+            >
               <NButton
                 v-for="(history, index) in searchHistorys"
                 :key="index"
@@ -78,7 +81,7 @@
                 {{history.first}}
               </NButton>
             </div>
-            <Empty class="empty">暂无搜索历史</Empty>
+            <Empty class="empty" v-else>暂无搜索历史</Empty>
           </div>
         </div>
       </div>

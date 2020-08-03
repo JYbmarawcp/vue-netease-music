@@ -1,7 +1,7 @@
 <template>
   <div class="header" v-if="playlist.id">
     <div class="img-wrap">
-      <img :src="$utils.genImgUrl(playlist.coverImgUrl, 400)" alt="">
+      <img v-lazy="$utils.genImgUrl(playlist.coverImgUrl, 400)" />
     </div>
     <div class="content">
       <div class="title-wrap">
@@ -37,17 +37,26 @@
 </template>
 
 <script>
+import { mapActions, mapMutations } from "@/store/helper/music"
+
 export default {
   props: {
     playlist: {
       type: Object,
       default: () => ({})
     },
+    songs: {
+      type: Array,
+      default: () => [],
+    }
   },
   methods: {
     playAll() {
-      
-    }
+      this.setPlaylist(this.songs)
+      this.startSong(this.songs[0])
+    },
+    ...mapActions(["startSong"]),
+    ...mapMutations(["setPlaylist"])
   },
   computed: {
     tagsText() {

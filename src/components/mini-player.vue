@@ -31,7 +31,13 @@
     <!-- 控制台 -->
     <div class="control">
       <Icon :size="24" @click="prev" class="icon" type="prev" />
-      <el-popover placement="top" trigger="manual" width="160">
+      <el-popover
+        :value="isPlayErrorPromptShow"
+        placement="top" 
+        trigger="manual"
+        width="160"
+      >
+        <p>请点击开始播放</p>
         <div @click="togglePlaying" slot="reference" class="play-icon">
           <Icon :size="24" :type="playIcon" />
         </div>
@@ -77,11 +83,18 @@
       <Icon :size="20" @click="goGitHub" class="mode-item" type="github" />
     </div>
 
-    <div class="progress-bar-wrap"></div>
+    <div class="progress-bar-wrap">
+      <ProgressBar 
+        :disabled="!hasCurrentSong"
+        :percent="playedPercent"
+        @percentChange="onProgressChange"
+      />
+    </div>
     <audio
       :src="currentSong.url"
       @canplay="ready"
       @ended="end"
+      @timeupdate="updateTime"
       ref="audio"
     ></audio>
   </div>
@@ -102,11 +115,14 @@ const DEFAULT_VOLUME = 0.75
 export default {
   data() {
     return {
+      isPlayErrorPromptShow: false,
       songReady: false,
       volume: storage.get(VOLUME_KEY, DEFAULT_VOLUME),
     }
   },
-  mounted() {},
+  mounted() {
+    this.audio.volume = this.volume
+  },
   methods: {
     togglePlaying() {
       if (!this.currentSong.id) {
@@ -114,15 +130,16 @@ export default {
       }
       this.setPlayingState(!this.playing)
     },
-    ready() {
-      this.songReady = true
-    },
     async play() {
       if (this.songReady) {
         try {
           await this.audio.play()
+          if (this.isPlayErrorPromptShow) {
+            this.isPlayErrorPromptShow = false
+          }
         } catch (error) {
           // 提示用户手动播放
+          this.isPlayErrorPromptShow = true
           this.setPlayingState(false)
         }
       }
@@ -131,13 +148,28 @@ export default {
       this.audio.pause()
     },
     prev() {
-      this.startSong(this.prevSong)
+      if (this.songReady) {
+        this.startSong(this.prevSong)
+      }
     },
     next() {
-      this.startSong(this.nextSong)
+      if (this.songReady) {
+        this.startSong(this.nextSong)
+      }
+    },
+    ready() {
+      this.songReady = true
     },
     end() {
       this.next()
+    },
+    updateTime(e) {
+      const time = e.target.currentTime
+      this.setCurrentTime(time)
+    },
+    onProgressChange(percent) {
+      this.audio.currentTime = this.currentSong.durationSecond * percent
+      this.setPlayingState(true)
     },
     onChangePlayMode() {
       const modeKeys = Object.keys(playModeMap)
@@ -150,6 +182,7 @@ export default {
       this.setPlayMode(nextMode.code)
     },
     onVolumeChange(percent) {
+      this.audio.volume = percent
       storage.set(VOLUME_KEY, percent)
     },
     togglePlaylistShow() {
@@ -215,8 +248,13 @@ export default {
     audio() {
       return this.$refs.audio
     },
+    // 播放的进度百分比
+    playedPercent() {
+      const { durationSecond } = this.currentSong
+      return Math.min(this.currentTime / durationSecond, 1) || 0
+    },
     playControlIcon() {
-      return 'shrink'
+      return this.isPlayerShow ? "shrink" : "open"
     },
     shareUrl() {
       return `https://music.163.com/#/song?id=${this.currentSong.id}`

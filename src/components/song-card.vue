@@ -4,7 +4,8 @@
       <span class="order">{{ order }}</span>
     </div>
     <div class="img-wrap">
-      <img :src="img">
+      <img v-lazy="$utils.genImgUrl(img, 120)">
+      <PlayIcon class="play-icon" />
     </div>
     <div class="song-content">
       <p class="song-name">{{ name }}</p>
@@ -49,6 +50,9 @@ export default {
       height: 100%;
     }
 
+    .play-icon {
+      @include abs-center;
+    }
   }
 
   .song-content {

@@ -11,6 +11,7 @@
         class="list"
       >
         <SongCard
+          @click.native="onClickSong(listIndex, index)"
           v-for="(item,index) in list"
           :key="item.id"
           :order="getSongOrder(listIndex, index)"
@@ -26,6 +27,7 @@
 import { getNewSongs } from "@/api"
 import SongCard from "@/components/song-card"
 import { createSong } from "@/utils"
+import { mapActions, mapMutations } from "@/store/helper/music"
 
 const songsLimit = 10
 export default {
@@ -62,7 +64,16 @@ export default {
         img: blurPicUrl,
         duration
       })
-    }
+    },
+    onClickSong(listIndex, index) {
+      // 这里因为getSongOrder是从1开始显示，所以当做数组下标需要减一
+      const nomalizeSongIndex = this.getSongOrder(listIndex, index) - 1
+      const nomalizeSong = this.normalizedSongs[nomalizeSongIndex]
+      this.startSong(nomalizeSong)
+      this.setPlaylist(this.normalizedSongs)
+    },
+    ...mapActions(["startSong"]),
+    ...mapMutations(["setPlaylist"])
   },
   computed: {
     thunkedList() {
@@ -70,6 +81,9 @@ export default {
         this.list.slice(0, this.chunkLimit),
         this.list.slice(this.chunkLimit, this.list.length)
       ]
+    },
+    normalizedSongs() {
+      return this.list.map(song => this.nomalizeSong(song))
     }
   },
   components: {

@@ -1,6 +1,6 @@
 <template>
   <div class="playlist-detail" v-if="playlist.id">
-    <DetailHeader ref="header" :playlist="playlist" />
+    <DetailHeader ref="header" :playlist="playlist" :songs="songs" />
     <div class="tabs-wrap">
       <Tabs :tabs="tabs" type="theme" v-model="activeTab" />
       <el-input

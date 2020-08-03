@@ -55,7 +55,7 @@ export default {
 
 <style lang="scss" scoped>
 .scroller {
-  position: absolute;
+  position: relative;
   overflow: hidden;
   height: 100%;
 }

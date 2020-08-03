@@ -1,7 +1,7 @@
 <template>
   <div @click="onClickCard" class="playlist-card">
     <div class="img-wrap">
-      <img :src="img">
+      <img v-lazy="$utils.genImgUrl(img, 300)">
       <div class="desc-wrap" v-if="desc">
         <span class="desc">{{ desc }}</span>
       </div>

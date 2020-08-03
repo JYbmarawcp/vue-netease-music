@@ -60,6 +60,7 @@ import { getMvDetail, getMvUrl, getSimiMv, getArtists } from '@/api'
 import { hideMenuMixin } from "@/utils"
 import Comments from '@/components/comments'
 import MvCard from '@/components/mv-card'
+import { mapMutations } from "@/store/helper/music"
 
 export default {
   mixins: [hideMenuMixin],
@@ -69,6 +70,7 @@ export default {
       required: true,
     },
   },
+  
   data() {
     return {
       mvDetail: {},
@@ -97,11 +99,21 @@ export default {
       this.mvPlayInfo = mvPlayInfo
       this.simiMvs = simiMvs
       this.artist = artist
+
+      this.$nextTick(() => {
+        const player = this.$ref.video.player
+        // 加载高清源
+        // player.emit("resourceReady", )
+        player.on("play", () => {
+          // 停止播放歌曲
+          this.setPlayingState(false)
+        })
+      })
     },
     goMv(id) {
       this.$router.push(`/mv/${id}`)
     },
-
+    ...mapMutations(["setPlayingState"])
   },
   components: {
     MvCard,

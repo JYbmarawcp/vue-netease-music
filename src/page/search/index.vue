@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import { mapState as mapGlobalState } from "@/store/helper/global"
 const tabs = [
   {
     title: "歌曲",
@@ -63,8 +64,9 @@ export default {
   },
   computed: {
     showEmpty() {
-      return this.count === 0
-    }
+      return !this.axiosLoading && this.count === 0
+    },
+    ...mapGlobalState(["axiosLoading"])
   }
 }
 </script>

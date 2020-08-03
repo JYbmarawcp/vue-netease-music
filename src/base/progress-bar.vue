@@ -63,7 +63,7 @@ export default {
       }
     },
     _triggerPercent() {
-      this.$emit("progressChange", this._getPercent())
+      this.$emit("percentChange", this._getPercent())
     },
     _offset(offsetWidth) {
       const offsetRem = toCurrentRem(offsetWidth)
