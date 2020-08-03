@@ -37,7 +37,7 @@ export default {
   },
   addToPlaylist({ commit, state }, song) {
     const { playlist } = state
-    const copy = playlist.slice
+    const copy = playlist.slice()
     if (!copy.find(({id}) => id === song.id)) {
       copy.unshift(song)
       commit('setPlaylist', copy)

@@ -39,7 +39,7 @@
                 v-for="item in normalizedSuggest.data"
                 :key="item.id"
                 class="item"
-
+                @click="normalizedSuggest.onClick(item)"
               >
                 <HighlightText
                   :highlightText="searchKeyword"
@@ -92,7 +92,8 @@
 <script>
 import storage from 'good-storage'
 import { getSearchHot, getSearchSuggest } from "@/api"
-import { getArtistsText, debounce } from "@/utils"
+import { createSong, getArtistsText, debounce } from "@/utils"
+import { mapActions, mapMutations } from "@/store/helper/music"
 
 const SEARCH_HISTORY_KEY = "__search_history__"
 export default {
@@ -134,14 +135,49 @@ export default {
       this.$router.push(`/search/${keywords}`)
       this.searchPanelShow = false
     },
-    
+    async onClickSong(item) {
+      const {
+        id,
+        name,
+        artists,
+        duration,
+        mvid,
+        album: { id: albumId, name: albumName }
+      } = item
+      const song = createSong({
+        id,
+        name,
+        artists,
+        duration,
+        albumId,
+        albumName,
+        mvId: mvid
+      })
+      this.startSong(song)
+      this.addToPlaylist(song)
+    },
+    onClickPlaylist(item) {
+      const { id } = item
+      this.$router.push(`/playlist/${id}`)
+      this.searchPanelShow = false
+    },
+    onClickMv(mv) {
+      console.log(mv);
+    },
+    onClickArtist(artist) {
+      console.log(artist);
+    },
+    ...mapMutations(["setPlaylist"]),
+    ...mapActions(["startSong", "addToPlaylist"])
   },
   computed: {
     suggestShow() {
-      return this.searchKeyword.length &&
+      return (
+        this.searchKeyword.length &&
         ["songs", "artists", "albums", "playlists"].find(key => {
           return this.suggest[key] && this.suggest[key].length
         })
+      )
     },
     normalizedSuggests() {
       return [
@@ -152,11 +188,13 @@ export default {
           renderName(song) {
             return `${song.name} - ${getArtistsText(song.artists)}`
           },
+          onClick: this.onClickSong.bind(this)
         },
         {
           title: "歌手",
           icon: "yonghu",
           data: this.suggest.artists,
+          onClick: this.onClickArtist.bind(this)
         },
         {
           title: "专辑",
@@ -165,12 +203,13 @@ export default {
           renderName(album) {
             return `${album.name} - ${album.artist.name}`
           },
+          onClick: this.onClickMv.bind(this)
         },
         {
           title: "歌单",
           icon: "playlist",
           data: this.suggest.playlists,
-          
+          onClick: this.onClickPlaylist.bind(this)
         }
       ].filter(item => item.data && item.data.length)
     }
