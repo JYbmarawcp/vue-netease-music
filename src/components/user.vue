@@ -26,6 +26,7 @@
           v-model="uid"
         />
         <div class="login-help">
+          <p class="help">注：默认登陆的是我的id，想登陆你的就按下面的步骤来吧⬇</p>
           <p class="help">
             1、请
             <a href="http://music.163.com" target="_blank"
@@ -76,7 +77,7 @@ export default {
     return {
       visible: false,
       loading: false,
-      uid: '',
+      uid: '316776160',
     }
   },
   methods: {

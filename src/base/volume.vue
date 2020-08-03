@@ -1,13 +1,13 @@
 <template>
   <div class="volume">
-    <Icon 
+    <Icon
       :size="20"
       :type="getIconType()"
       @click="toggleSilence"
       class="icon"
     />
     <div class="progress-wrap">
-      <ProgressBar 
+      <ProgressBar
         :percent="volumePercent"
         @percentChange="onProgressChange"
         alwaysShowBtn
@@ -18,16 +18,16 @@
 
 <script>
 export default {
-  name: "Volume",
+  name: 'Volume',
   props: {
     volume: {
       type: Number,
       default: 1,
-    }
+    },
   },
-  data () {
+  data() {
     return {
-      volumePercent: this.volume
+      volumePercent: this.volume,
     }
   },
   methods: {
@@ -36,14 +36,14 @@ export default {
         percent = 0
       }
       this.volumePercent = percent
-      this.$emit('onVolumeChange', percent)
+      this.$emit('volumeChange', percent)
     },
     getIconType() {
-      return this.isSilence ? "silence" : "horn"
+      return this.isSilence ? 'silence' : 'horn'
     },
     toggleSilence() {
       this.isSilence = !this.isSilence
-    }
+    },
   },
   computed: {
     isSilence: {
@@ -57,9 +57,9 @@ export default {
         }
         this.volumePercent = target
         this.onProgressChange(target)
-      }
-    }
-  }
+      },
+    },
+  },
 }
 </script>
 

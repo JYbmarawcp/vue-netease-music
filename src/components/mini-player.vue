@@ -33,7 +33,7 @@
       <Icon :size="24" @click="prev" class="icon" type="prev" />
       <el-popover
         :value="isPlayErrorPromptShow"
-        placement="top" 
+        placement="top"
         trigger="manual"
         width="160"
       >
@@ -77,14 +77,14 @@
       </el-popover>
       <!-- 音量 -->
       <div class="volume-item">
-        <Volume :volume="volume" @volumechange="onVolumeChange" />
+        <Volume :volume="volume" @volumeChange="onVolumeChange" />
       </div>
       <!-- github -->
       <Icon :size="20" @click="goGitHub" class="mode-item" type="github" />
     </div>
 
     <div class="progress-bar-wrap">
-      <ProgressBar 
+      <ProgressBar
         :disabled="!hasCurrentSong"
         :percent="playedPercent"
         @percentChange="onProgressChange"
@@ -95,6 +95,7 @@
       @canplay="ready"
       @ended="end"
       @timeupdate="updateTime"
+      @error="urlError"
       ref="audio"
     ></audio>
   </div>
@@ -109,7 +110,7 @@ import {
 } from '@/store/helper/music'
 import Share from '@/components/share'
 import storage from 'good-storage'
-import { VOLUME_KEY, playModeMap } from '@/utils'
+import { notify, VOLUME_KEY, playModeMap } from '@/utils'
 
 const DEFAULT_VOLUME = 0.75
 export default {
@@ -162,6 +163,10 @@ export default {
     },
     end() {
       this.next()
+    },
+    urlError() {
+      this.startSong(this.nextSong)
+      notify.info('因合作方要求,该资源暂时下架>_<')
     },
     updateTime(e) {
       const time = e.target.currentTime
@@ -254,7 +259,7 @@ export default {
       return Math.min(this.currentTime / durationSecond, 1) || 0
     },
     playControlIcon() {
-      return this.isPlayerShow ? "shrink" : "open"
+      return this.isPlayerShow ? 'shrink' : 'open'
     },
     shareUrl() {
       return `https://music.163.com/#/song?id=${this.currentSong.id}`
@@ -404,7 +409,7 @@ export default {
     }
 
     .volume-item {
-      margin-left: 22px;
+      margin-right: 22px;
     }
   }
 

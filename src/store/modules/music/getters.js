@@ -18,7 +18,7 @@ export const nextSong = (state, getters) => {
   return playlist[index]
 
   // 顺序
-  function getSequenceNextIndex() {
+  function getSequenceNextIndex () {
     let nextIndex = getters.currentIndex + 1
     if (nextIndex > playlist.length - 1) {
       nextIndex = 0
@@ -27,12 +27,12 @@ export const nextSong = (state, getters) => {
   }
 
   // 随机
-  function getRandomNextIndex() {
+  function getRandomNextIndex () {
     return getRandomIndex(playlist, getters.currentIndex)
   }
 
   // 单曲
-  function getLoopNextIndex() {
+  function getLoopNextIndex () {
     return getters.currentIndex
   }
 }
@@ -40,12 +40,32 @@ export const nextSong = (state, getters) => {
 
 // 上一首歌
 export const prevSong = (state, getters) => {
-  const { playlist } = state
-  let prevIndex = getters.currentIndex - 1
-  if (prevIndex < 0) {
-    prevIndex = playlist.length - 1
+  const { playlist, playMode } = state
+  const prevStratMap = {
+    [playModeMap.sequence.code]: genSequencePrevIndex,
+    [playModeMap.loop.code]: getLoopPrevIndex,
+    [playModeMap.random.code]: getRandomPrevIndex
   }
-  return playlist[prevIndex]
+  const getPrevStrat = prevStratMap[playMode]
+  const index = getPrevStrat()
+
+  return playlist[index]
+
+  function genSequencePrevIndex () {
+    let prevIndex = getters.currentIndex - 1
+    if (prevIndex < 0) {
+      prevIndex = playlist.length - 1
+    }
+    return prevIndex
+  }
+
+  function getLoopPrevIndex () {
+    return getters.currentIndex
+  }
+
+  function getRandomPrevIndex () {
+    return getRandomIndex(playlist, getters.currentIndex)
+  }
 }
 
 // 当前是否有歌曲在播放
@@ -53,7 +73,7 @@ export const hasCurrentSong = (state) => {
   return isDef(state.currentSong.id)
 }
 
-function getRandomIndex(playlist, currentIndex) {
+function getRandomIndex (playlist, currentIndex) {
   // 防止无限循环
   if (playlist.length === 1) {
     return currentIndex
