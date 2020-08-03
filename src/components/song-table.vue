@@ -259,7 +259,7 @@ function getPropsAndAttrs(rawAttrs, componnentProps) {
 
   .index-wrap {
     text-align: center;
-    color: var(--font-color-gery-shallow);
+    color: var(--font-color-grey-shallow);
   }
 
   .img-wrap {

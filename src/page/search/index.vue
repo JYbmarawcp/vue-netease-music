@@ -85,7 +85,7 @@ export default {
 
     .found {
       font-size: $font-size-sm;
-      color: var(--font-color-gery-shallow);
+      color: var(--font-color-grey-shallow);
       letter-spacing: 1px;
     }
   }

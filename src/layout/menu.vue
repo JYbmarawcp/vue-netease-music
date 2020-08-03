@@ -78,7 +78,7 @@ export default {
 
       .menu-block-title {
         font-size: $font-size-sm;
-        color: var(--font-color-gery2);
+        color: var(--font-color-grey2);
         padding-left: 16px;
         margin-bottom: 8px;
       }

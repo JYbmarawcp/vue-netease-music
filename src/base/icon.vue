@@ -92,7 +92,7 @@ export default {
     color: $white;
   }
   &-shallow {
-    color: var(--font-color-shallow-gery);
+    color: var(--font-color-shallow-grey);
   }
 }
 </style>

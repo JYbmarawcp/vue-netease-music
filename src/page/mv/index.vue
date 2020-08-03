@@ -1,5 +1,5 @@
 <template>
-  <div class="mv">
+  <div class="mv" v-if="$utils.isDef(mvDetail.id)">
     <div class="mv-content">
       <div class="left">
         <p class="title">MV详情</p>
@@ -10,7 +10,7 @@
         
         <div class="author-wrap">
           <div class="avatar">
-            <img v-lazy="$utils.genImgUrl(artist.picUrl, 120)" alt="" />
+            <img v-lazy="$utils.genImgUrl(artist.picUrl, 120)" />
           </div>
           <p class="author">{{ artist.name }}</p>
         </div>
@@ -70,7 +70,11 @@ export default {
       required: true,
     },
   },
-  
+  metaInfo() {
+    return {
+      title: this.mvDetail.name
+    }
+  },
   data() {
     return {
       mvDetail: {},
@@ -101,7 +105,7 @@ export default {
       this.artist = artist
 
       this.$nextTick(() => {
-        const player = this.$ref.video.player
+        const player = this.$refs.video.player
         // 加载高清源
         // player.emit("resourceReady", )
         player.on("play", () => {
@@ -175,7 +179,7 @@ export default {
 
       .desc {
         display: flex;
-        color: var(--font-color-gery-shallow);
+        color: var(--font-color-grey-shallow);
         font-size: $font-size-sm;
 
         .date {

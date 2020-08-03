@@ -14,6 +14,11 @@ import Playlist from "@/components/playlist"
 import Player from "@/components/player"
 
 export default {
+  metaInfo() {
+    return {
+      title: "网易云音乐"
+    }
+  },
   name: 'app',
   components: {
     Layout,

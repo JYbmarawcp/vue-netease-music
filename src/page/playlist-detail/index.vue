@@ -45,6 +45,11 @@ const MAX = 500
 const SONG_IDX = 0
 const COMMENT_IDX = 1
 export default {
+  metaInfo() {
+    return {
+      title: this.playlist.name,
+    }
+  },
   async created () {
     this.SONG_IDX = SONG_IDX
     this.COMMENT_IDX = COMMENT_IDX

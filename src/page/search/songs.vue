@@ -89,7 +89,7 @@ export default {
     .name-desc {
       display: block;
       margin-top: 8px;
-      color: var(--font-color-gery-shallow);
+      color: var(--font-color-grey-shallow);
       @include text-ellipsis;
     }
   }

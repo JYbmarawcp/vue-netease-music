@@ -350,7 +350,7 @@ export default {
 
       .time {
         font-size: $font-size-xs;
-        color: var(--font-color-gery);
+        color: var(--font-color-grey);
 
         .split {
           margin: 0 4px;

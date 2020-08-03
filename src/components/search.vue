@@ -198,7 +198,7 @@ export default {
       padding: 16px 24px;
 
       .title {
-        color: var(--font-color-gery);
+        color: var(--font-color-grey);
         margin-bottom: 16px;
       }
 
@@ -215,7 +215,7 @@ export default {
 
       .empty {
         @include flex-center();
-        color: var(--font-color-gery);
+        color: var(--font-color-grey);
         font-size: $font-size;
         height: 100px;
       }
@@ -226,7 +226,7 @@ export default {
 
       .title {
         margin: 16px 8px 8px;
-        color: var(--font-color-gery-shallow);
+        color: var(--font-color-grey-shallow);
       }
 
       .list {
