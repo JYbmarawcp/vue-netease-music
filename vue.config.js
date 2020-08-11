@@ -2,8 +2,11 @@ const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
   outputDir: 'music',
-  publicPath: isProd ? './' : '/',
   configureWebpack: {
+    devServer: {
+      open: true,
+      port: 6666,
+    },
     externals: isProd ? {
       vue: 'Vue',
       'vue-router': 'VueRouter',
