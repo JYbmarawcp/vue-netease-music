@@ -6,7 +6,12 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "commit": "git-cz"
+    "commit": "git-cz",
+    "release-f": "standard-version -f",
+    "release-major": "standard-version -r major",
+    "release-minor": "standard-version -r minor",
+    "release-patch": "standard-version -r patch",
+    "release": "sh release.sh"
   },
   "dependencies": {
     "@better-scroll/core": "^2.0.0-beta.10",
@@ -38,6 +43,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "postcss-pxtorem": "^5.1.1",
     "sass-loader": "^8.0.0",
+    "standard-version": "^8.0.2",
     "vue-cli-plugin-element": "~1.0.1",
     "vue-template-compiler": "^2.6.11",
     "workbox-webpack-plugin": "^5.1.3"
