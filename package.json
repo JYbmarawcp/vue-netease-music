@@ -10,8 +10,7 @@
     "release-f": "standard-version -f",
     "release-major": "standard-version -r major",
     "release-minor": "standard-version -r minor",
-    "release-patch": "standard-version -r patch",
-    "release": "sh release.sh"
+    "release-patch": "standard-version -r patch"
   },
   "dependencies": {
     "@better-scroll/core": "^2.0.0-beta.10",
