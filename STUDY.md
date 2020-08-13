@@ -158,3 +158,14 @@ document.webkitIsFullScreen
 - decodeURIComponent() 函数可对 encodeURIComponent() 函数编码的 URI 进行解码。
   http%3A%2F%2Fwww.w3school.com.cn%2FMy%20first%2F
   http://www.w3school.com.cn/My first/
+
+* require("workbox-webpack-plugin")
+module.exports = {
+  // Other webpack config...
+  plugins: [
+    // Other plugins...
+    new GenerateSW()
+  ]
+};
+这将为您的所有Webpack资产生成具有预缓存设置的服务工作者。
+

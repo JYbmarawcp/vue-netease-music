@@ -10,6 +10,8 @@ import store from './store/index'
 import global from './utils/global'
 
 Vue.config.productionTip = false
+Vue.config.performance = process.env.NODE_ENV !== "production"
+
 Vue.use(global)
 
 new Vue({
