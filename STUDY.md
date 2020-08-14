@@ -169,3 +169,13 @@ module.exports = {
 };
 这将为您的所有Webpack资产生成具有预缓存设置的服务工作者。
 
+* 浏览器兼容方面
+  <!-- 强制Chromium内核 作用于360浏览器 QQ浏览器等国产双核浏览器 -->
+  <meta name="renderer" content="webkit" />
+  <!-- 强制Chromium内核 作用于其他双核浏览器 -->
+  <meta name="force-rendering" content="webkit" />
+  <!-- 如果有安装Google Chrome Frame插件则强制IE为Chromium内核 否则强制本机支持的最高IE内核作用于IE浏览器 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+
+* 自动将http的不安全请求升级为https
+  <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
