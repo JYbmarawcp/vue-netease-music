@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.1.0](https://github.com/JYbmarawcp/vue-netease-music/compare/v1.0.0...v0.1.0) (2020-08-14)
+
+
+### Features
+
+* 浏览器兼容适配，兼容国产的双核浏览器；强制使用https连接 ([268c911](https://github.com/JYbmarawcp/vue-netease-music/commit/268c911590180b5920f200e94a8be498f324f983))
+
 ## [1.0.0](https://github.com/JYbmarawcp/vue-netease-music/compare/v0.1.1...v1.0.0) (2020-08-13)
 
 
