@@ -2,14 +2,6 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.1.1](https://github.com/JYbmarawcp/vue-netease-music/compare/v0.1.0...v0.1.1) (2020-08-18)
-
-
-### Features
-
-* 新增百度统计 ([30a017a](https://github.com/JYbmarawcp/vue-netease-music/commit/30a017acd28d19fd4d8fc2efebe1ca21533839c8))
-* 获取歌手单曲 ([ccfcd6a](https://github.com/JYbmarawcp/vue-netease-music/commit/ccfcd6a23f142a0a93e4718900192f94bc0d40d9))
-
 ## [1.0.0](https://github.com/JYbmarawcp/vue-netease-music/compare/v0.1.1...v1.0.0) (2020-08-13)
 
 
