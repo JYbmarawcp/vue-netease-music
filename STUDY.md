@@ -206,4 +206,31 @@ module.exports = {
 
 渲染引擎又包括了 HTML 解释器、CSS 解释器、布局、网络、存储、图形、音视频、图片解码器等等零部件。
 Trident（IE）、Gecko（火狐）、Blink（Chrome、Opera）、Webkit（Safari）
+HTML 解释器：将 HTML 文档经过词法分析输出 DOM 树。
 
+CSS 解释器：解析 CSS 文档, 生成样式规则。
+
+图层布局计算模块：布局计算每个对象的精确位置和大小。
+
+视图绘制模块：进行具体节点的图像绘制，将像素渲染到屏幕上。
+
+JavaScript 引擎：编译执行 Javascript 代码。
+
+CSS 选择符是从右到左进行匹配的
+  避免使用通配符，只对需要用到的元素进行选择。
+  关注可以通过继承实现的属性，避免重复匹配重复定义。
+  少用标签选择器。如果可以，用类选择器替代
+减少嵌套。后代选择器的开销是最高的，因此我们应该尽量将选择器的深度降到最低（最高不要超过三层），尽可能使用类来关联每一个标签元素。
+
+JS的三种加载方式
+正常模式：
+<script src="index.js"></script>
+这种情况下 JS 会阻塞浏览器，浏览器必须等待 index.js 加载和执行完毕才能去做其它事情。
+
+async 模式：
+<script async src="index.js"></script>
+async 模式下，JS 不会阻塞浏览器做任何其它的事情。它的加载是异步的，当它加载结束，JS 脚本会立即执行。
+
+defer 模式：
+<script defer src="index.js"></script>
+defer 模式下，JS 的加载是异步的，执行是被推迟的。等整个文档解析完成、DOMContentLoaded 事件即将被触发时，被标记了 defer 的 JS 文件才会开始依次执行。
