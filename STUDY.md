@@ -234,3 +234,13 @@ async 模式下，JS 不会阻塞浏览器做任何其它的事情。它的加�
 defer 模式：
 <script defer src="index.js"></script>
 defer 模式下，JS 的加载是异步的，执行是被推迟的。等整个文档解析完成、DOMContentLoaded 事件即将被触发时，被标记了 defer 的 JS 文件才会开始依次执行。
+
+
+* 如何规避回流与重绘
+将“导火索”缓存起来，避免频繁改动
+避免逐条改变样式，使用类名去合并样式
+将 DOM “离线” display:none => *操作*  => display: block
+
+当你要用到像这样的属性：offsetTop、offsetLeft、 offsetWidth、offsetHeight、scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientLeft、clientWidth、clientHeight 时，你就要注意了！
+“像这样”的属性，到底是像什么样？——这些值有一个共性，就是需要通过即时计算得到。因此浏览器为了获取这些值，也会进行回流。
+
