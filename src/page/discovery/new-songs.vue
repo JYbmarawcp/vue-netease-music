@@ -69,6 +69,7 @@ export default {
       // 这里因为getSongOrder是从1开始显示，所以当做数组下标需要减一
       const nomalizeSongIndex = this.getSongOrder(listIndex, index) - 1
       const nomalizeSong = this.normalizedSongs[nomalizeSongIndex]
+      console.log(nomalizeSong);
       this.startSong(nomalizeSong)
       this.setPlaylist(this.normalizedSongs)
     },

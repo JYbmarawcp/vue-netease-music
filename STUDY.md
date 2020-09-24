@@ -244,3 +244,8 @@ defer 模式下，JS 的加载是异步的，执行是被推迟的。等整个�
 当你要用到像这样的属性：offsetTop、offsetLeft、 offsetWidth、offsetHeight、scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientLeft、clientWidth、clientHeight 时，你就要注意了！
 “像这样”的属性，到底是像什么样？——这些值有一个共性，就是需要通过即时计算得到。因此浏览器为了获取这些值，也会进行回流。
 
+* 动态添加多个样式
+:class="[songCls(song.id), { border: index === playlist.length-1}]"
+
+* window.open有什么弊端
+window.open打开的网页可以通过window.opener属性获取到来源网站的window对象，或者通过document.referrer获取到来源网站的地址。所以在使用window.open时，可以把第三个参数设置为noopener=yes,noreferrer=yes。
