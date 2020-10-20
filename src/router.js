@@ -1,17 +1,17 @@
 import Vue from "vue";
 import Router from "vue-router";
 
+const Discovery = () => import(/* webpackChunkName: "Discovery" */ '@/page/discovery')
+const Songs = () => import(/* webpackChunkName: "Songs" */ '@/page/songs')
+const Playlists = () => import(/* webpackChunkName: "Playlists" */ '@/page/playlists')
+const PlaylistDetail = () => import(/* webpackChunkName: "PlaylistDetail" */ '@/page/playlist-detail')
+const Mvs = () => import(/* webpackChunkName: "Mvs" */ '@/page/mvs')
+const Mv = () => import(/* webpackChunkName: "Mv" */ '@/page/mv')
+const Search = () => import(/* webpackChunkName: "Search" */ '@/page/search')
+const SearchSongs = () => import(/* webpackChunkName: "SearchSongs" */ '@/page/search/songs')
+const SearchPlaylists = () => import(/* webpackChunkName: "SearchPlaylists" */ '@/page/search/playlists')
+const SearchMvs = () => import(/* webpackChunkName: "SearchMvs" */ '@/page/search/mvs')
 
-const Discovery = () => import('@/page/discovery')
-const Songs = () => import('@/page/songs')
-const Playlists = () => import('@/page/playlists')
-const PlaylistDetail = () => import('@/page/playlist-detail')
-const Mvs = () => import('@/page/mvs')
-const Mv = () => import('@/page/mv')
-const Search = () => import('@/page/search')
-const SearchSongs = () => import('@/page/search/songs')
-const SearchPlaylists = () => import('@/page/search/playlists')
-const SearchMvs = () => import('@/page/search/mvs')
 //内容需要居中的页面
 export const LayoutCenterNames = ['discovery', 'songs', 'mvs']
 
