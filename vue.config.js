@@ -7,7 +7,7 @@ module.exports = {
   configureWebpack: {
     devServer: {
       open: true,
-      port: 8088,
+      port: 8998,
     },
     externals: isProd ? {
       vue: 'Vue',
