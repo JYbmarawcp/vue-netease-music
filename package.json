@@ -16,7 +16,7 @@
     "@better-scroll/core": "^2.0.0-beta.10",
     "@better-scroll/mouse-wheel": "^2.0.0-beta.10",
     "@better-scroll/scroll-bar": "^2.0.0-beta.10",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "clipboard": "^2.0.6",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
